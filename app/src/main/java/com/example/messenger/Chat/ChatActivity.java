@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 public class ChatActivity extends AppCompatActivity {
-    ListView chatMessages;
+    ListView chatListView;
     TextView chatTextBox;
     FirebaseAuth mAuth;
     ArrayList<MessageInfo> messages;
@@ -59,12 +59,12 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         String info[] = getIntent().getExtras().getStringArray("information");
         recivingUser = new userInfo(info[0], info[1], info[2]);
-        chatMessages = findViewById(R.id.chatListView);
+        chatListView = findViewById(R.id.chatListView);
         chatTextBox = findViewById(R.id.chatTextBox);
         mAuth = FirebaseAuth.getInstance();
         messages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, messages);
-        chatMessages.setAdapter(messageAdapter);
+        chatListView.setAdapter(messageAdapter);
         FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("friends").child(recivingUser.userUID).child("messages").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
