@@ -114,8 +114,7 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent backIntent = new Intent(this, usersActivity.class);
-        startActivity(backIntent);
+        finish();
         super.onBackPressed();
     }
 }

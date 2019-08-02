@@ -102,7 +102,6 @@ public class usersActivity extends AppCompatActivity {
                 Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
                 chatIntent.putExtra("information",new String[]{users.get(position).email,users.get(position).nickname,users.get(position).userUID});
                 startActivity(chatIntent);
-                finish();
             }
         });
     }

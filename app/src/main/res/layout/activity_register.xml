@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_weight="1"
     tools:context=".Register.registerActivity">
 
     <ImageView
@@ -13,7 +14,7 @@
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
@@ -24,7 +25,7 @@
         style="@style/AppTheme"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textWebEmailAddress|textPersonName"
@@ -33,9 +34,8 @@
         android:textColorHint="#F3F0F0"
         android:textColorLink="#F3F0F0"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.509"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/nickNameEditText"
+        app:layout_constraintStart_toStartOf="@+id/nickNameEditText"
         app:layout_constraintTop_toBottomOf="@+id/nickNameEditText" />
 
     <EditText
@@ -43,8 +43,7 @@
         style="@style/AppTheme"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPersonName|textPassword"
@@ -53,9 +52,8 @@
         android:textColorHint="#F3F0F0"
         android:textColorLink="#F3F0F0"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.477"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/emailRegisterText"
+        app:layout_constraintStart_toStartOf="@+id/emailRegisterText"
         app:layout_constraintTop_toBottomOf="@+id/emailRegisterText" />
 
     <EditText
@@ -63,9 +61,7 @@
         style="@style/AppTheme"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_marginStart="81dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="117dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Confirm Password"
         android:inputType="textPersonName|textPassword"
@@ -74,64 +70,54 @@
         android:textColorHint="#F3F0F0"
         android:textColorLink="#F3F0F0"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/passwordRegisterText"
+        app:layout_constraintStart_toStartOf="@+id/passwordRegisterText"
         app:layout_constraintTop_toBottomOf="@+id/passwordRegisterText" />
 
     <Button
         android:id="@+id/button"
         style="@style/AppTheme"
-        android:layout_width="125dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="165dp"
-        android:layout_marginTop="608dp"
-        android:layout_marginEnd="141dp"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
         android:background="#2F2F35"
         android:onClick="Register"
         android:text="Register!"
         android:textColor="#DAC8CF"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="@+id/progressBar"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
     <ProgressBar
         android:id="@+id/passwordStrengthBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="90dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:max="100"
         android:progress="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.774"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/passwordStrenghtText"
         app:layout_constraintTop_toBottomOf="@+id/passwordConfirmText" />
 
     <TextView
         android:id="@+id/passwordStrenghtText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
-        android:layout_marginEnd="289dp"
+        android:layout_marginTop="20dp"
         android:text="Password Strength"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordConfirmText" />
 
     <TextView
         android:id="@+id/passwordStrengthPercent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="315dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="290dp"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.093"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -140,7 +126,8 @@
         style="@style/AppTheme"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="82dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Nickname"
         android:inputType="textPersonName"
@@ -149,8 +136,6 @@
         android:textColorHint="#F3F0F0"
         android:textColorLink="#F3F0F0"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/RegisterBackground" />
 
@@ -159,13 +144,13 @@
         style="@style/AppTheme"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:background="#2F2F35"
         android:onClick="pickImage"
         android:text="Choose Image"
         android:textColor="#DBCBCB"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toEndOf="@+id/RegisterBackground"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordStrengthBar" />
 
@@ -173,14 +158,12 @@
         android:id="@+id/uploadImageView"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="115dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
         android:scaleType="fitXY"
         android:tag="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/uploadPictureButton"
+        app:layout_constraintStart_toStartOf="@+id/uploadPictureButton"
         app:layout_constraintTop_toBottomOf="@+id/uploadPictureButton"
         app:srcCompat="@android:color/transparent" />
 
@@ -189,12 +172,11 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:max="100"
         android:progress="0"
-        app:layout_constraintEnd_toStartOf="@+id/RegisterBackground"
-        app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toEndOf="@+id/RegisterBackground"
+        app:layout_constraintEnd_toEndOf="@+id/uploadImageView"
+        app:layout_constraintStart_toStartOf="@+id/uploadImageView"
         app:layout_constraintTop_toBottomOf="@+id/uploadImageView"
         tools:visibility="invisible" />
 
