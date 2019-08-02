@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.messenger.Adapter.usersAdapter;
+import com.example.messenger.Adapter.UsersAdapter;
 import com.example.messenger.Chat.ChatActivity;
 import com.example.messenger.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +32,7 @@ public class usersActivity extends AppCompatActivity {
     ListView userListView = null;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public ArrayList<userInfo> users;
-    private com.example.messenger.Adapter.usersAdapter usersAdapter;
+    private UsersAdapter usersAdapter;
 
     public void Init() {
         userToolBar = findViewById(R.id.toolbar);
@@ -40,7 +40,7 @@ public class usersActivity extends AppCompatActivity {
         userToolBar.setTitle(mAuth.getCurrentUser().getDisplayName());
         userToolBar.setSubtitle("Online");
         users = new ArrayList<userInfo>();
-        usersAdapter = new usersAdapter(getApplicationContext(), users);
+        usersAdapter = new UsersAdapter(getApplicationContext(), users);
         userListView.setAdapter(usersAdapter);
         userToolBar.inflateMenu(R.menu.adduser);
         userToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {

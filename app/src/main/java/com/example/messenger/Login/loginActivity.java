@@ -47,10 +47,10 @@ public class loginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if (!user.isEmailVerified()) {
+                            /*if (!user.isEmailVerified()) {
                                 Toast.makeText(loginActivity.this, "This Email address is not verified yet!", Toast.LENGTH_SHORT).show();
                                 return;
-                            }
+                            }*/
                             Intent UsersActivity = new Intent(getApplicationContext(), usersActivity.class);
                             startActivity(UsersActivity);
                             //finish();
