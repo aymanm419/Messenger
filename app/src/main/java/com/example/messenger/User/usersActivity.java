@@ -7,12 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.messenger.Adapter.usersAdapter;
+import com.example.messenger.Chat.ChatActivity;
 import com.example.messenger.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -46,7 +49,6 @@ public class usersActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.addUser) {
                     Intent intent = new Intent(getApplicationContext(), AddUser.class);
                     startActivity(intent);
-                    finish();
                 }
                 return false;
             }
@@ -80,7 +82,7 @@ public class usersActivity extends AppCompatActivity {
                 for (userInfo user : users) {
                     if (user.email.equals(dataSnapshot.child("email").getValue().toString())) {
                         users.remove(user);
-                        return;
+                        break;
                     }
                 }
                 usersAdapter.notifyDataSetChanged();
@@ -92,6 +94,15 @@ public class usersActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
+                chatIntent.putExtra("information",new String[]{users.get(position).email,users.get(position).nickname,users.get(position).userUID});
+                startActivity(chatIntent);
+                finish();
             }
         });
     }

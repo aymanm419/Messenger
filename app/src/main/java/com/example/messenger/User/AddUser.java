@@ -50,7 +50,7 @@ public class AddUser extends AppCompatActivity {
         for (userInfo currentUser : AllUsers) {
             if (currentUser.email.equals(email)) {
                 FirebaseDatabase.getInstance().getReference().child("users").
-                        child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("friends").push().setValue(
+                        child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("friends").child(currentUser.userUID).setValue(
                         new userInfo(currentUser.nickname, currentUser.email, currentUser.userUID));
                 Toast.makeText(this, "Friend Added Successfully!", Toast.LENGTH_SHORT).show();
                 return;
@@ -152,12 +152,5 @@ public class AddUser extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this,usersActivity.class);
-        startActivity(intent);
-        super.onBackPressed();
     }
 }

@@ -47,8 +47,9 @@ public class usersAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = View.inflate(mContext, R.layout.user_custom_layout, null);
-        ((TextView) v.findViewById(R.id.friendTextView)).setText(usersArrayList.get(position).nickname);
+        final TextView textView = (TextView)v.findViewById(R.id.friendTextView);
         final CircleImageView circleImageView = v.findViewById(R.id.profileCircleView);
+        textView.setText(usersArrayList.get(position).nickname);
         FirebaseStorage.getInstance().getReference().child("Images/" + usersArrayList.get(position).email + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {

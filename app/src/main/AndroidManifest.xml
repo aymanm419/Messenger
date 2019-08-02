@@ -12,12 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".User.AddUser"></activity>
+        <activity android:name=".Chat.ChatActivity"></activity>
+        <activity android:name=".User.AddUser" />
         <activity android:name=".User.usersActivity" />
         <activity android:name=".Register.registerActivity" />
         <activity android:name=".Login.loginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

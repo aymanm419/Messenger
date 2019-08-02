@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#310909"
+    android:background="#F8F5F5"
     android:orientation="vertical">
 
 
@@ -16,7 +16,7 @@
         android:layout_marginTop="25dp"
         android:fontFamily="monospace"
         android:textAppearance="@style/AppTheme"
-        android:textColor="#DBCBCB"
+        android:textColor="#000000"
         android:textSize="20sp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
