@@ -51,7 +51,7 @@ public class registerActivity extends AppCompatActivity {
         }
     }
 
-    private static final int PICK_IMAGE = 1;
+    public static final int PICK_IMAGE = 1;
     private FirebaseAuth mAuth;
     private static int passwordStrengthPart = 20;
 
@@ -151,7 +151,7 @@ public class registerActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            uploadPhoto(email, nickname, user);
+                            registerUser(email, nickname, user);
                             FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(
                                     new user(email, password, nickname));
                         } else {
@@ -161,7 +161,7 @@ public class registerActivity extends AppCompatActivity {
                 });
     }
 
-    public void uploadPhoto(final String email, final String nickName, final FirebaseUser user) {
+    public void registerUser(final String email, final String nickName, final FirebaseUser user) {
         ImageView imageView = findViewById(R.id.uploadImageView);
         imageView.setDrawingCacheEnabled(true);
         imageView.buildDrawingCache();
@@ -169,7 +169,7 @@ public class registerActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
-        UploadTask uploadTask = FirebaseStorage.getInstance().getReference().child("Images").child(email + ".jpg").putBytes(data);
+        UploadTask uploadTask = FirebaseStorage.getInstance().getReference().child("profile_images").child(email + ".jpg").putBytes(data);
         Toast.makeText(this, "Uploading!", Toast.LENGTH_SHORT).show();
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override

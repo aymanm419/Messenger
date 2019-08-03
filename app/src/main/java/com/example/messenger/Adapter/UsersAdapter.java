@@ -33,6 +33,8 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.example.messenger.Chat.ChatActivity.MESSAGE_PHOTO;
+
 public class UsersAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<userInfo> usersArrayList;
@@ -66,15 +68,10 @@ public class UsersAdapter extends BaseAdapter {
         final TextView textView = (TextView) v.findViewById(R.id.friendTextView);
         final CircleImageView circleImageView = v.findViewById(R.id.receiverProfilePicture);
         textView.setText(usersArrayList.get(position).nickname);
-        FirebaseStorage.getInstance().getReference().child("Images/" + usersArrayList.get(position).email + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        FirebaseStorage.getInstance().getReference().child("profile_images/" + usersArrayList.get(position).email + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 GlideApp.with(mContext).load(uri).into(circleImageView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.i("Info", "Failed");
             }
         });
         Query lastQuery = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), usersArrayList.get(position).userUID))
@@ -82,6 +79,8 @@ public class UsersAdapter extends BaseAdapter {
         lastQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()) == MESSAGE_PHOTO)
+                    return;
                 String message = dataSnapshot.child("messageContent").getValue().toString();
                 if (message.length() > MAX_LAST_MESSAGE_SIZE)
                     message = message.substring(0, MAX_LAST_MESSAGE_SIZE) + "...";
