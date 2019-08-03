@@ -13,9 +13,11 @@ import android.widget.Toast;
 
 import com.example.messenger.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 public class AddUser extends AppCompatActivity {
     ArrayList<userInfo> AllUsers;
     ArrayList<userInfo> UserFriends;
+    private FirebaseUser mUser;
+    private DatabaseReference dbR;
 
     boolean isAlreadyFriend(String email) {
         for (userInfo user : UserFriends) {
@@ -85,7 +89,9 @@ public class AddUser extends AppCompatActivity {
         setContentView(R.layout.activity_add_user);
         AllUsers = new ArrayList<>();
         UserFriends = new ArrayList<>();
-        FirebaseDatabase.getInstance().getReference().child("users").addChildEventListener(new ChildEventListener() {
+        dbR = FirebaseDatabase.getInstance().getReference();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        dbR.child("users").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
@@ -118,8 +124,7 @@ public class AddUser extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("friends").addChildEventListener(new ChildEventListener() {
+        dbR.child(String.format("users/%s/friends", mUser.getUid())).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {

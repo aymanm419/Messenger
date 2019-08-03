@@ -18,9 +18,11 @@ import com.example.messenger.Adapter.UsersAdapter;
 import com.example.messenger.Chat.ChatActivity;
 import com.example.messenger.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -30,14 +32,17 @@ public class usersActivity extends AppCompatActivity {
     long lastTimeCliked = 0;
     Toolbar userToolBar = null;
     ListView userListView = null;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser mUser;
+    private DatabaseReference dbR;
     public ArrayList<userInfo> users;
     private UsersAdapter usersAdapter;
 
     public void Init() {
+        dbR = FirebaseDatabase.getInstance().getReference();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         userToolBar = findViewById(R.id.toolbar);
         userListView = findViewById(R.id.userList);
-        userToolBar.setTitle(mAuth.getCurrentUser().getDisplayName());
+        userToolBar.setTitle(mUser.getDisplayName());
         userToolBar.setSubtitle("Online");
         users = new ArrayList<userInfo>();
         usersAdapter = new UsersAdapter(getApplicationContext(), users);
@@ -60,8 +65,7 @@ public class usersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
         Init();
-        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("friends").addChildEventListener(new ChildEventListener() {
+        dbR.child(String.format("users/%s/friends", mUser.getUid())).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
@@ -100,7 +104,7 @@ public class usersActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
-                chatIntent.putExtra("information",new String[]{users.get(position).email,users.get(position).nickname,users.get(position).userUID});
+                chatIntent.putExtra("information", new String[]{users.get(position).email, users.get(position).nickname, users.get(position).userUID});
                 startActivity(chatIntent);
             }
         });
@@ -114,7 +118,7 @@ public class usersActivity extends AppCompatActivity {
             lastTimeCliked = time;
             return;
         } else {
-            mAuth.signOut();
+            FirebaseAuth.getInstance().signOut();
             finish();
             super.onBackPressed();
         }

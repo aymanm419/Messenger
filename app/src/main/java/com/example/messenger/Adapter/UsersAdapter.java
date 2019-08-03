@@ -7,14 +7,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.example.messenger.Chat.ChatActivity.MessageInfo;
 import com.example.messenger.Tools.*;
 import com.example.messenger.R;
 import com.example.messenger.User.userInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -24,11 +36,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UsersAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<userInfo> usersArrayList;
+    private final int MAX_LAST_MESSAGE_SIZE = 35;
+    private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+    private final DatabaseReference dbR = FirebaseDatabase.getInstance().getReference();
 
     public UsersAdapter(Context mContext, ArrayList<userInfo> usersArrayList) {
         this.mContext = mContext;
         this.usersArrayList = usersArrayList;
     }
+
     @Override
     public int getCount() {
         return usersArrayList.size();
@@ -46,8 +62,8 @@ public class UsersAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = View.inflate(mContext, R.layout.user_custom_layout, null);
-        final TextView textView = (TextView)v.findViewById(R.id.friendTextView);
+        final View v = View.inflate(mContext, R.layout.user_custom_layout, null);
+        final TextView textView = (TextView) v.findViewById(R.id.friendTextView);
         final CircleImageView circleImageView = v.findViewById(R.id.receiverProfilePicture);
         textView.setText(usersArrayList.get(position).nickname);
         FirebaseStorage.getInstance().getReference().child("Images/" + usersArrayList.get(position).email + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -59,6 +75,33 @@ public class UsersAdapter extends BaseAdapter {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.i("Info", "Failed");
+            }
+        });
+        Query lastQuery = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), usersArrayList.get(position).userUID))
+                .orderByValue().limitToLast(1);
+        lastQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String message = dataSnapshot.child("messageContent").getValue().toString();
+                if (message.length() > MAX_LAST_MESSAGE_SIZE)
+                    message = message.substring(0, MAX_LAST_MESSAGE_SIZE) + "...";
+                ((TextView) v.findViewById(R.id.lastMessageTextView)).setText(message);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
         return v;
