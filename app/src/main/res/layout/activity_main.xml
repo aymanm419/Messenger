@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:contentDescription="loginBackground"
         android:scaleType="fitXY"
         android:src="@drawable/loginbackground"
@@ -23,10 +23,10 @@
 
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="250dp"
+        android:layout_width="@dimen/_200sdp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginStart="@dimen/_60sdp"
+        android:layout_marginTop="@dimen/_150sdp"
         android:autofillHints=""
         android:ems="10"
         android:hint="Email"
@@ -34,18 +34,16 @@
         android:textColorHighlight="#F3F0F0"
         android:textColorHint="#F3F0F0"
         android:textColorLink="#F3F0F0"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.373"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/passwordEditText"
-        android:layout_width="250dp"
+        android:layout_width="@dimen/_200sdp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="@dimen/_60sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:ems="10"
         android:hint="Password"
         android:importantForAutofill="no"
@@ -53,46 +51,38 @@
         android:textColorHighlight="#F3F0F0"
         android:textColorHint="#F3F0F0"
         android:textColorLink="#F3F0F0"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.373"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
     <Button
         android:id="@+id/loginButton"
         style="@style/AppTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_90sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:background="#2F2F35"
         android:onClick="Login"
         android:text="Login"
         android:textColor="#DBCBCB"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <Button
         android:id="@+id/registerButton"
         style="@style/AppTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginBottom="156dp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:background="#2F2F35"
         android:onClick="Register"
         android:text="Register"
         android:textColor="#DBCBCB"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.132"
+        android:textSize="@dimen/_12ssp"
         app:layout_constraintStart_toEndOf="@+id/loginButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

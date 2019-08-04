@@ -4,20 +4,20 @@
 
     <TextView
         android:id="@+id/receiverTextView"
-        android:layout_width="298dp"
+        android:layout_width="@dimen/_230sdp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="@dimen/_60sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:background="@android:drawable/editbox_background_normal"
         android:fontFamily="monospace"
         android:textAppearance="@style/AppTheme"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_14ssp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/receiverProfilePicture"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp" />
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp" />
 </RelativeLayout>
