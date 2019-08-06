@@ -3,11 +3,16 @@ package com.example.messenger.Register;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.messenger.R;
+import com.example.messenger.Tools.BitMapHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,7 +40,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.regex.Pattern;
 
 public class registerActivity extends AppCompatActivity {
     private static class user {
@@ -54,12 +59,14 @@ public class registerActivity extends AppCompatActivity {
     public static final int PICK_IMAGE = 1;
     private FirebaseAuth mAuth;
     private static int passwordStrengthPart = 20;
+    private static final int REQUEST_WRITE_STORAGE_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
+        requestAppPermissions();
         ((EditText) findViewById(R.id.passwordRegisterText)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -78,8 +85,11 @@ public class registerActivity extends AppCompatActivity {
             }
         });
     }
-
     public void pickImage(View view) {
+        if (!hasReadPermissions()) {
+            requestAppPermissions();
+            return;
+        }
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
@@ -104,19 +114,34 @@ public class registerActivity extends AppCompatActivity {
         }
     }
 
-    public boolean validateEmail(String email) {
-        return Pattern.matches("[A-Z0-9a-z._%+-]+@[a-zA-Z0-9]+\\.[A-Za-z]{2,4}", email);
-    }
-
-    public void Register(View view) {
-        String nickName = ((EditText) findViewById(R.id.nickNameEditText)).getText().toString();
-        String email = ((EditText) findViewById(R.id.emailRegisterText)).getText().toString();
-        String password = ((EditText) findViewById(R.id.passwordRegisterText)).getText().toString();
-        String confirmPassword = ((EditText) findViewById(R.id.passwordConfirmText)).getText().toString();
-        if (!validateEmail(email)) {
-            Toast.makeText(this, "Invalid Email Address!", Toast.LENGTH_SHORT).show();
+    private void requestAppPermissions() {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return;
         }
+
+        if (hasReadPermissions() && hasWritePermissions()) {
+            return;
+        }
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, REQUEST_WRITE_STORAGE_REQUEST_CODE); // your request code
+    }
+
+    private boolean hasReadPermissions() {
+        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private boolean hasWritePermissions() {
+        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+    public void Register(View view) {
+        String nickName = ((EditText) findViewById(R.id.nickNameEditText)).getText().toString();
+        String email = ((EditText) findViewById(R.id.emailRegisterText)).getText().toString().replace(" ", "");
+        String password = ((EditText) findViewById(R.id.passwordRegisterText)).getText().toString();
+        String confirmPassword = ((EditText) findViewById(R.id.passwordConfirmText)).getText().toString();
         if (nickName.length() <= 2) {
             Toast.makeText(this, "Nickname is very short!", Toast.LENGTH_SHORT).show();
             return;
@@ -151,7 +176,11 @@ public class registerActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            registerUser(email, nickname, user);
+                            try {
+                                registerUser(email, nickname, user);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(
                                     new user(email, password, nickname));
                         } else {
@@ -163,11 +192,11 @@ public class registerActivity extends AppCompatActivity {
 
     public void registerUser(final String email, final String nickName, final FirebaseUser user) {
         ImageView imageView = findViewById(R.id.uploadImageView);
-        imageView.setDrawingCacheEnabled(true);
-        imageView.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        BitMapHandler bitMapHandler = new BitMapHandler();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap = bitMapHandler.getResizedBitmapLessThanMaxSize(bitmap, 100);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
         byte[] data = baos.toByteArray();
         UploadTask uploadTask = FirebaseStorage.getInstance().getReference().child("profile_images").child(email + ".jpg").putBytes(data);
         Toast.makeText(this, "Uploading!", Toast.LENGTH_SHORT).show();
@@ -190,13 +219,13 @@ public class registerActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                user.sendEmailVerification()
+                /*user.sendEmailVerification()
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(registerActivity.this, "Verification Email Sent!", Toast.LENGTH_LONG).show();
                             }
-                        });
+                        });*/
                 finish();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
