@@ -43,16 +43,23 @@ import java.io.InputStream;
 
 public class registerActivity extends AppCompatActivity {
     private static class user {
-        String email, password, nickname;
+        public String email, nickname;
 
         public user() {
 
         }
 
-        public user(String _email, String _password, String _nickname) {
+        public user(String _email, String _nickname) {
             email = _email;
-            password = _password;
             nickname = _nickname;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getNickname() {
+            return nickname;
         }
     }
 
@@ -85,6 +92,7 @@ public class registerActivity extends AppCompatActivity {
             }
         });
     }
+
     public void pickImage(View view) {
         if (!hasReadPermissions()) {
             requestAppPermissions();
@@ -137,6 +145,7 @@ public class registerActivity extends AppCompatActivity {
     private boolean hasWritePermissions() {
         return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
+
     public void Register(View view) {
         String nickName = ((EditText) findViewById(R.id.nickNameEditText)).getText().toString();
         String email = ((EditText) findViewById(R.id.emailRegisterText)).getText().toString().replace(" ", "");
@@ -182,7 +191,8 @@ public class registerActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(
-                                    new user(email, password, nickname));
+                                    new user(email, nickname));
+                            finish();
                         } else {
                             Toast.makeText(registerActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }

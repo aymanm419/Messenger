@@ -13,4 +13,16 @@ public class userInfo {
         this.email = _email;
         this.userUID = _userUID;
     }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getUserUID() {
+        return userUID;
+    }
 }

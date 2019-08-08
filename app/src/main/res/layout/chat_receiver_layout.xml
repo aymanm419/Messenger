@@ -19,5 +19,6 @@
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_5sdp" />
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/unknown_profile" />
 </RelativeLayout>

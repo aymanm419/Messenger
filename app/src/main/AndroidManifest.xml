@@ -4,16 +4,20 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".Chat.ChatActivity"></activity>
+        <activity
+            android:name=".User.usersActivity"
+            android:label="@string/title_activity_users"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".Chat.ChatActivity" />
         <activity android:name=".User.AddUser" />
-        <activity android:name=".User.usersActivity" />
         <activity android:name=".Register.registerActivity" />
         <activity android:name=".Login.loginActivity">
             <intent-filter>

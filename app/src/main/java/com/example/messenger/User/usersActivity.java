@@ -1,115 +1,37 @@
 package com.example.messenger.User;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.os.Bundle;
+
+import com.example.messenger.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
-
-import com.example.messenger.Adapter.UsersAdapter;
-import com.example.messenger.Chat.ChatActivity;
-import com.example.messenger.R;
+import com.example.messenger.User.ui.main.SectionsPagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class usersActivity extends AppCompatActivity {
-    long lastTimeCliked = 0;
-    Toolbar userToolBar = null;
-    ListView userListView = null;
-    private FirebaseUser mUser;
-    private DatabaseReference dbR;
-    public ArrayList<userInfo> users;
-    private UsersAdapter usersAdapter;
-
-    public void Init() {
-        dbR = FirebaseDatabase.getInstance().getReference();
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
-        userToolBar = findViewById(R.id.toolbar);
-        userListView = findViewById(R.id.userList);
-        userToolBar.setTitle(mUser.getDisplayName());
-        userToolBar.setSubtitle("Online");
-        users = new ArrayList<userInfo>();
-        usersAdapter = new UsersAdapter(getApplicationContext(), users);
-        userListView.setAdapter(usersAdapter);
-        userToolBar.inflateMenu(R.menu.adduser);
-        userToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.addUser) {
-                    Intent intent = new Intent(getApplicationContext(), AddUser.class);
-                    startActivity(intent);
-                }
-                return false;
-            }
-        });
-    }
-
+    private long lastTimeCliked = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
-        Init();
-        dbR.child(String.format("users/%s/friends", mUser.getUid())).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                try {
-                    users.add(new userInfo(dataSnapshot.child("nickname").getValue().toString()
-                            , dataSnapshot.child("email").getValue().toString(), dataSnapshot.getKey()));
-                    usersAdapter.notifyDataSetChanged();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                for (userInfo user : users) {
-                    if (user.email.equals(dataSnapshot.child("email").getValue().toString())) {
-                        users.remove(user);
-                        break;
-                    }
-                }
-                usersAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
-                chatIntent.putExtra("information", new String[]{users.get(position).email, users.get(position).nickname, users.get(position).userUID});
-                startActivity(chatIntent);
-            }
-        });
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
     }
-
     @Override
     public void onBackPressed() {
         long time = (new Date()).getTime();
