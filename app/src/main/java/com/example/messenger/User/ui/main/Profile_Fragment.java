@@ -24,7 +24,7 @@ public class Profile_Fragment extends Fragment {
     private FirebaseUser mUser;
     private CircleImageView circleImageView;
     private TextView textView;
-
+    private TextView nickname;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,7 +32,9 @@ public class Profile_Fragment extends Fragment {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         circleImageView = (CircleImageView) view.findViewById(R.id.imageProfile);
         textView = (TextView) view.findViewById(R.id.emailAddress);
+        nickname = view.findViewById(R.id.nicknameText);
         textView.setText(mUser.getEmail());
+        nickname.setText(mUser.getDisplayName());
         FirebaseStorage.getInstance().getReference().child("profile_images/" + mUser.getEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
