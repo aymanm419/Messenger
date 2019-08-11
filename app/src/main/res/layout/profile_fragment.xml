@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageProfile"
+        android:id="@+id/chatImageProfile"
         android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_120sdp"
         android:layout_marginStart="124dp"
@@ -50,7 +50,7 @@
         android:textColor="#000000"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/nickNameTextView"
-        app:layout_constraintTop_toBottomOf="@+id/imageProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/chatImageProfile" />
 
     <TextView
         android:id="@+id/nickNameTextView"
@@ -63,6 +63,6 @@
         android:textColor="#776E6E"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/chatImageProfile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -175,6 +176,7 @@ public class registerActivity extends AppCompatActivity {
             Toast.makeText(this, "Please Choose a picture", Toast.LENGTH_SHORT).show();
             return;
         }
+        ((Button) findViewById(R.id.registerButton)).setEnabled(false);
         makeAccount(email, password, nickName);
     }
 
@@ -185,11 +187,7 @@ public class registerActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            try {
-                                registerUser(email, nickname, user);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            registerUser(email, nickname, user);
                             FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(
                                     new user(email, nickname));
                             finish();
@@ -197,7 +195,13 @@ public class registerActivity extends AppCompatActivity {
                             Toast.makeText(registerActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(registerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                ((Button) findViewById(R.id.registerButton)).setEnabled(true);
+            }
+        });
     }
 
     public void registerUser(final String email, final String nickName, final FirebaseUser user) {
@@ -213,7 +217,8 @@ public class registerActivity extends AppCompatActivity {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(registerActivity.this, "Upload Failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(registerActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                ((Button) findViewById(R.id.registerButton)).setEnabled(true);
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -236,6 +241,7 @@ public class registerActivity extends AppCompatActivity {
                                 Toast.makeText(registerActivity.this, "Verification Email Sent!", Toast.LENGTH_LONG).show();
                             }
                         });*/
+                ((Button) findViewById(R.id.registerButton)).setEnabled(true);
                 finish();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {

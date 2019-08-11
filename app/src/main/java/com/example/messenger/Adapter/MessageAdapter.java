@@ -1,96 +1,130 @@
 package com.example.messenger.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
-import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messenger.Chat.ChatActivity;
-import com.example.messenger.Tools.*;
 import com.example.messenger.R;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.example.messenger.Tools.GlideApp;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.example.messenger.Chat.ChatActivity.MESSAGE_TEXT;
-import static java.security.AccessController.getContext;
-
-public class MessageAdapter extends BaseAdapter {
+public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private ArrayList<ChatActivity.MessageInfo> messageArrayList;
-    int width_dp;
-    int height_dp;
     public MessageAdapter(Context mContext, ArrayList<ChatActivity.MessageInfo> usersArrayList) {
         this.mContext = mContext;
         this.messageArrayList = usersArrayList;
-        int width_px = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int height_px = Resources.getSystem().getDisplayMetrics().heightPixels;
-        int pixeldpi = Resources.getSystem().getDisplayMetrics().densityDpi;
-        width_dp = (width_px / pixeldpi) * 160;
-        height_dp = (height_px / pixeldpi) * 160;
+    }
+
+    public class View_Holder0 extends RecyclerView.ViewHolder {
+        TextView message;
+        CircleImageView imageView;
+
+        public View_Holder0(@NonNull View itemView) {
+            super(itemView);
+            message = (TextView) itemView.findViewById(R.id.receiverTextView);
+            imageView = (CircleImageView) itemView.findViewById(R.id.receiverProfilePicture);
+        }
+    }
+
+    public class View_Holder1 extends RecyclerView.ViewHolder {
+        ImageView messageImage;
+        CircleImageView imageView;
+
+        public View_Holder1(@NonNull View itemView) {
+            super(itemView);
+            messageImage = (ImageView) itemView.findViewById(R.id.imageSent);
+            imageView = (CircleImageView) itemView.findViewById(R.id.imageProfilePicture);
+        }
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = null;
+        RecyclerView.ViewHolder holder = null;
+        switch (viewType) {
+            case 0:
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_receiver_layout, parent, false);
+                holder = new View_Holder0(v);
+                break;
+            case 1:
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_image_layout, parent, false);
+                holder = new View_Holder1(v);
+                break;
+        }
+        return holder;
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case 0:
+                final View_Holder0 view_holder0 = (View_Holder0) holder;
+                view_holder0.message.setText(messageArrayList.get(position).getMessageContent());
+                FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        GlideApp.with(mContext).load(uri).into(view_holder0.imageView);
+                    }
+                });
+                break;
+            case 1:
+                final View_Holder1 view_holder1 = (View_Holder1) holder;
+                FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        GlideApp.with(mContext).load(uri).into(view_holder1.imageView);
+                    }
+                });
+                FirebaseStorage.getInstance().getReference().child("chat_images/" + messageArrayList.get(position).getMessageContent()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        GlideApp.with(mContext).load(uri).fitCenter().into(view_holder1.messageImage);
+                    }
+                });
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return messageArrayList.get(position).getMessageType();
+    }
+
+    @Override
+    public int getItemCount() {
         return messageArrayList.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return messageArrayList.get(position);
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
+    // Insert a new item to the RecyclerView on a predefined position
+    public void insert(ChatActivity.MessageInfo data) {
+        messageArrayList.add(data);
+
+        notifyItemInserted(messageArrayList.size() - 1);
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v;
-        if (messageArrayList.get(position).getMessageType() == MESSAGE_TEXT) {
-            v = View.inflate(mContext, R.layout.chat_receiver_layout, null);
-            final TextView textView = (TextView) v.findViewById(R.id.receiverTextView);
-            final CircleImageView circleImageView = v.findViewById(R.id.receiverProfilePicture);
-            textView.setText(messageArrayList.get(position).getMessageContent());
-            FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    GlideApp.with(mContext).load(uri).into(circleImageView);
-                }
-            });
-        } else {
-            v = View.inflate(mContext, R.layout.chat_image_layout, null);
-            final CircleImageView circleImageView = v.findViewById(R.id.imageProfilePicture);
-            final ImageView imageView = v.findViewById(R.id.imageSent);
-            FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    GlideApp.with(mContext).load(uri).into(circleImageView);
-                }
-            });
-            FirebaseStorage.getInstance().getReference().child("chat_images/" + messageArrayList.get(position).getMessageContent()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    GlideApp.with(mContext).load(uri).fitCenter().into(imageView);
-                }
-            });
-        }
-        return v;
+    // Remove a RecyclerView item containing a specified Data object
+    public void remove(ChatActivity.MessageInfo data) {
+        int position = messageArrayList.indexOf(data);
+        messageArrayList.remove(position);
+        notifyItemRemoved(position);
     }
 }

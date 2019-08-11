@@ -5,6 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,8 +16,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +45,7 @@ import static com.example.messenger.Register.registerActivity.PICK_IMAGE;
 
 public class ChatActivity extends AppCompatActivity {
     private static final int REQUEST_WRITE_STORAGE_REQUEST_CODE = 2;
-    ListView chatListView;
+    RecyclerView chatListView;
     TextView chatTextBox;
     DatabaseReference dbR;
     FirebaseAuth mAuth;
@@ -90,10 +94,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+    public void Init() {
         String info[] = getIntent().getExtras().getStringArray("information");
         dbR = FirebaseDatabase.getInstance().getReference();
         recivingUser = new userInfo(info[0], info[1], info[2]);
@@ -102,14 +103,28 @@ public class ChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         messages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, messages);
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
+        Init();
         chatListView.setAdapter(messageAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        chatListView.setLayoutManager(linearLayoutManager);
+        chatListView.setHasFixedSize(true);
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        chatListView.setItemAnimator(itemAnimator);
         dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.userUID))
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        messages.add(new MessageInfo(dataSnapshot.child("messageContent").getValue().toString(), dataSnapshot.child("senderEmail").getValue().toString()
-                                , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey()));
-                        messageAdapter.notifyDataSetChanged();
+                        MessageInfo messageInfo = new MessageInfo(dataSnapshot.child("messageContent").getValue().toString(), dataSnapshot.child("senderEmail").getValue().toString()
+                                , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey());
+                        messageAdapter.insert(messageInfo);
+                        chatListView.getLayoutManager().scrollToPosition(messageAdapter.getItemCount() - 1);
                     }
 
                     @Override

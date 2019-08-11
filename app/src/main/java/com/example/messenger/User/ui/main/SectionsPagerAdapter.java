@@ -17,7 +17,7 @@ import com.example.messenger.R;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private static final String[] TAB_TITLES = new String[]{"Chats", "Profile"};
+    private static final String[] TAB_TITLES = new String[]{"Chats", "Profile", "Find Users"};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -35,6 +35,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 fragment = new Profile_Fragment();
                 break;
+            case 2:
+                fragment = new Profile_Fragment();
+                break;
         }
         return fragment;
     }
@@ -47,7 +50,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
         return TAB_TITLES.length;
     }
 }
