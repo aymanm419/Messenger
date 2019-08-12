@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 public class AddUser extends AppCompatActivity {
-    ArrayList<userInfo> AllUsers;
+    /*ArrayList<userInfo> AllUsers;
     ArrayList<userInfo> UserFriends;
     private FirebaseUser mUser;
     private DatabaseReference dbR;
@@ -157,5 +157,5 @@ public class AddUser extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-    }
+    }*/
 }

@@ -29,28 +29,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.messageArrayList = usersArrayList;
     }
 
-    public class View_Holder0 extends RecyclerView.ViewHolder {
-        TextView message;
-        CircleImageView imageView;
-
-        public View_Holder0(@NonNull View itemView) {
-            super(itemView);
-            message = (TextView) itemView.findViewById(R.id.receiverTextView);
-            imageView = (CircleImageView) itemView.findViewById(R.id.receiverProfilePicture);
-        }
-    }
-
-    public class View_Holder1 extends RecyclerView.ViewHolder {
-        ImageView messageImage;
-        CircleImageView imageView;
-
-        public View_Holder1(@NonNull View itemView) {
-            super(itemView);
-            messageImage = (ImageView) itemView.findViewById(R.id.imageSent);
-            imageView = (CircleImageView) itemView.findViewById(R.id.imageProfilePicture);
-        }
-    }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,11 +37,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         switch (viewType) {
             case 0:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_receiver_layout, parent, false);
-                holder = new View_Holder0(v);
+                holder = new View_Holder.View_Holder0(v);
                 break;
             case 1:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_image_layout, parent, false);
-                holder = new View_Holder1(v);
+                holder = new View_Holder.View_Holder1(v);
                 break;
         }
         return holder;
@@ -73,7 +51,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case 0:
-                final View_Holder0 view_holder0 = (View_Holder0) holder;
+                final View_Holder.View_Holder0 view_holder0 = (View_Holder.View_Holder0) holder;
                 view_holder0.message.setText(messageArrayList.get(position).getMessageContent());
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -83,7 +61,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 });
                 break;
             case 1:
-                final View_Holder1 view_holder1 = (View_Holder1) holder;
+                final View_Holder.View_Holder1 view_holder1 = (View_Holder.View_Holder1) holder;
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -116,9 +94,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     // Insert a new item to the RecyclerView on a predefined position
     public void insert(ChatActivity.MessageInfo data) {
-        messageArrayList.add(data);
+        messageArrayList.add(0, data);
 
-        notifyItemInserted(messageArrayList.size() - 1);
+        notifyItemInserted(0);
     }
 
     // Remove a RecyclerView item containing a specified Data object

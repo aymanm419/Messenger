@@ -111,6 +111,8 @@ public class ChatActivity extends AppCompatActivity {
         Init();
         chatListView.setAdapter(messageAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         chatListView.setLayoutManager(linearLayoutManager);
         chatListView.setHasFixedSize(true);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -124,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
                         MessageInfo messageInfo = new MessageInfo(dataSnapshot.child("messageContent").getValue().toString(), dataSnapshot.child("senderEmail").getValue().toString()
                                 , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey());
                         messageAdapter.insert(messageInfo);
-                        chatListView.getLayoutManager().scrollToPosition(messageAdapter.getItemCount() - 1);
+                        chatListView.getLayoutManager().scrollToPosition(0);
                     }
 
                     @Override

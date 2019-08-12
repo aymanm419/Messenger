@@ -36,7 +36,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 fragment = new Profile_Fragment();
                 break;
             case 2:
-                fragment = new Profile_Fragment();
+                fragment = new Add_Users_Fragment();
                 break;
         }
         return fragment;
