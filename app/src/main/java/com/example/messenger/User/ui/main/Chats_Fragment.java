@@ -90,7 +90,7 @@ public class Chats_Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent chatIntent = new Intent(view.getContext(), ChatActivity.class);
-                chatIntent.putExtra("information", new String[]{users.get(position).email, users.get(position).nickname, users.get(position).userUID});
+                chatIntent.putExtra("information", new String[]{users.get(position).email, users.get(position).nickname, users.get(position).getUserUID()});
                 startActivity(chatIntent);
             }
         });

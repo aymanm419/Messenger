@@ -33,6 +33,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.example.messenger.Chat.ChatActivity.MESSAGE_NO_LAST_SEEN;
 import static com.example.messenger.Chat.ChatActivity.MESSAGE_PHOTO;
 
 public class UsersAdapter extends BaseAdapter {
@@ -63,7 +64,7 @@ public class UsersAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final View v = View.inflate(mContext, R.layout.user_custom_layout, null);
         final TextView textView = (TextView) v.findViewById(R.id.friendTextView);
         final CircleImageView circleImageView = v.findViewById(R.id.receiverProfilePicture);
@@ -74,7 +75,7 @@ public class UsersAdapter extends BaseAdapter {
                 GlideApp.with(mContext).load(uri).into(circleImageView);
             }
         });
-        Query lastQuery = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), usersArrayList.get(position).userUID))
+        Query lastQuery = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), usersArrayList.get(position).getUserUID()))
                 .orderByValue().limitToLast(1);
         lastQuery.addChildEventListener(new ChildEventListener() {
             @Override

@@ -1,6 +1,7 @@
 package com.example.messenger.User.ui.main;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.messenger.Adapter.UsersAdapter;
+import com.example.messenger.Profile.user_profile;
 import com.example.messenger.R;
 import com.example.messenger.User.userInfo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,43 +62,9 @@ public class Add_Users_Fragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                String email = friendTextView.getText().toString();
-                if (email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                    Toast.makeText(getContext(), "You Can't Add Yourself!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(), R.style.AlertDialogCustom);
-                builder.setTitle("Add User");
-                builder.setMessage("Are you sure you want to add this user?");
-
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        // Do nothing
-                        dialog.dismiss();
-                    }
-                });
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends/%s", fbu.getUid(),
-                                users.get(position).userUID)).setValue(new userInfo(users.get(position).nickname, users.get(position).email, users.get(position).userUID));
-                        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", users.get(position).userUID,
-                                fbu.getUid())).setValue(new userInfo(fbu.getDisplayName(), fbu.getEmail(), fbu.getUid()));
-                        Toast.makeText(getContext(), "Friend Added Successfully!", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
-                });
-
-                AlertDialog alert = builder.create();
-
-                alert.show();
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundColor(0x76CF79);
-                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setBackgroundColor(0x00B93D3D);
-
+                Intent intent = new Intent(view.getContext(), user_profile.class);
+                intent.putExtra("information", new String[]{users.get(position).email, users.get(position).nickname, users.get(position).getUserUID()});
+                startActivity(intent);
                 return;
             }
         });
@@ -125,7 +93,6 @@ public class Add_Users_Fragment extends Fragment {
                         }
                         usersAdapter.notifyDataSetChanged();
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 

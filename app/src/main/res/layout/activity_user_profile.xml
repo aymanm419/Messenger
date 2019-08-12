@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".Profile.user_profile">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userImageProfile"
@@ -16,6 +17,30 @@
         app:civ_border_width="@dimen/_2sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/addFriendImage"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:clickable="true"
+        android:onClick="addFriend"
+        android:src="@drawable/ic_person_add_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userEmailAddress" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/removeFriendImage"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:clickable="true"
+        android:onClick="deleteFriend"
+        android:src="@drawable/ic_remove_circle_black_24dp"
+        app:layout_constraintStart_toEndOf="@+id/addFriendImage"
+        app:layout_constraintTop_toBottomOf="@+id/userEmailAddress" />
 
     <TextView
         android:id="@+id/userEmailAddress"

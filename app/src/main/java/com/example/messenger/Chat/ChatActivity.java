@@ -54,7 +54,7 @@ public class ChatActivity extends AppCompatActivity {
     MessageAdapter messageAdapter;
     public static final int MESSAGE_TEXT = 0;
     public static final int MESSAGE_PHOTO = 1;
-
+    public static final int MESSAGE_NO_LAST_SEEN = 2;
     public static class MessageInfo {
         private String messageContent;
         private String senderEmail;
@@ -97,7 +97,7 @@ public class ChatActivity extends AppCompatActivity {
     public void Init() {
         String info[] = getIntent().getExtras().getStringArray("information");
         dbR = FirebaseDatabase.getInstance().getReference();
-        recivingUser = new userInfo(info[0], info[1], info[2]);
+        recivingUser = new userInfo(info[1], info[0], info[2]);
         chatListView = findViewById(R.id.chatListView);
         chatTextBox = findViewById(R.id.chatTextBox);
         mAuth = FirebaseAuth.getInstance();
@@ -119,7 +119,7 @@ public class ChatActivity extends AppCompatActivity {
         itemAnimator.setAddDuration(1000);
         itemAnimator.setRemoveDuration(1000);
         chatListView.setItemAnimator(itemAnimator);
-        dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.userUID))
+        dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -157,16 +157,16 @@ public class ChatActivity extends AppCompatActivity {
         try {
             //Add yourself to receiver friend list if first message(Does nothing if already added)
             if (messages.isEmpty()) {
-                dbR.child(String.format("users/%s/friends/%s", recivingUser.userUID, mAuth.getCurrentUser().getUid()))
+                dbR.child(String.format("users/%s/friends/%s", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
                         .setValue(
                                 new userInfo(mAuth.getCurrentUser().getDisplayName(), mAuth.getCurrentUser().getEmail(),
                                         mAuth.getCurrentUser().getUid())
                         );
             }
-            dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.userUID))
+            dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
                     .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail()
             ));
-            dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.userUID, mAuth.getCurrentUser().getUid()))
+            dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
                     .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail()
             ));
             chatTextBox.setText("");
@@ -219,10 +219,10 @@ public class ChatActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.userUID))
+                dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
                         .push().setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO
                 ));
-                dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.userUID, mAuth.getCurrentUser().getUid()))
+                dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
                         .push().setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO
                 ));
             }

@@ -30,9 +30,9 @@ public class Profile_Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.profile_fragment, container, false);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        circleImageView = (CircleImageView) view.findViewById(R.id.chatImageProfile);
-        textView = (TextView) view.findViewById(R.id.emailAddress);
-        nickname = view.findViewById(R.id.nicknameText);
+        circleImageView = (CircleImageView) view.findViewById(R.id.userImageProfile);
+        textView = (TextView) view.findViewById(R.id.userEmailAddressText);
+        nickname = view.findViewById(R.id.userNickNameText);
         textView.setText(mUser.getEmail());
         nickname.setText(mUser.getDisplayName());
         FirebaseStorage.getInstance().getReference().child("profile_images/" + mUser.getEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
