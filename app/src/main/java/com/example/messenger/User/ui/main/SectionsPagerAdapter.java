@@ -17,7 +17,7 @@ import com.example.messenger.R;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private static final String[] TAB_TITLES = new String[]{"Chats", "Profile", "Find Users"};
+    private static final String[] TAB_TITLES = new String[]{"Chats", "Find Users", "Pending Requests", "Profile"};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -33,10 +33,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 fragment = new Chats_Fragment();
                 break;
             case 1:
-                fragment = new Profile_Fragment();
+                fragment = new Add_Users_Fragment();
                 break;
             case 2:
-                fragment = new Add_Users_Fragment();
+                fragment = new Pending_Requests_Fragment();
+                break;
+            case 3:
+                fragment = new Profile_Fragment();
                 break;
         }
         return fragment;
@@ -52,4 +55,5 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return TAB_TITLES.length;
     }
+
 }

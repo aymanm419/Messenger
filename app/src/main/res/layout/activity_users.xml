@@ -28,8 +28,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:tabTextColor="#000000" />
+            app:tabIndicatorFullWidth="false"
+            app:tabPaddingEnd="@dimen/_15sdp"
+            app:tabPaddingStart="@dimen/_15sdp"
+            app:tabMode="scrollable"
+            app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            app:tabTextColor="#FFFFFF" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager

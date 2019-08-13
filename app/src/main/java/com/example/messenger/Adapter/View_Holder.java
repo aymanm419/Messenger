@@ -34,5 +34,16 @@ public class View_Holder {
             imageView = (CircleImageView) itemView.findViewById(R.id.imageProfilePicture);
         }
     }
+
+    static public class View_Holder2 extends RecyclerView.ViewHolder {
+        TextView email;
+        CircleImageView imageView;
+
+        public View_Holder2(@NonNull View itemView) {
+            super(itemView);
+            email = (TextView) itemView.findViewById(R.id.pendingTextView);
+            imageView = (CircleImageView) itemView.findViewById(R.id.pendingPicture);
+        }
+    }
 }
 

@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Date;
 
 public class usersActivity extends AppCompatActivity {
-    private long lastTimeCliked = 0;
+    private long lastTimeClicked = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,9 +35,9 @@ public class usersActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         long time = (new Date()).getTime();
-        if (time - lastTimeCliked >= 2000) {
+        if (time - lastTimeClicked >= 2000) {
             Toast.makeText(this, "Click Back Again to logout!", Toast.LENGTH_SHORT).show();
-            lastTimeCliked = time;
+            lastTimeClicked = time;
             return;
         } else {
             FirebaseAuth.getInstance().signOut();
