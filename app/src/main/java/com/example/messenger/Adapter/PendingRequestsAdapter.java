@@ -14,6 +14,8 @@ import com.example.messenger.R;
 import com.example.messenger.Tools.GlideApp;
 import com.example.messenger.User.userInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -35,12 +37,28 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<View_Holder.Vie
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final View_Holder.View_Holder2 holder, int position) {
+    public void onBindViewHolder(@NonNull final View_Holder.View_Holder2 holder, final int position) {
         holder.email.setText(pendingArrayList.get(position).email);
         FirebaseStorage.getInstance().getReference().child(String.format("profile_images/%s.jpg", pendingArrayList.get(position).email)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 GlideApp.with(mContext).load(uri).into(holder.imageView);
+            }
+        });
+        holder.checkImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends/%s", FirebaseAuth.getInstance().getUid(),
+                        pendingArrayList.get(position).getUserUID())).setValue(pendingArrayList.get(position));
+                FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", FirebaseAuth.getInstance().getUid(),
+                        pendingArrayList.get(position).getUserUID())).removeValue();
+            }
+        });
+        holder.cancelImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", FirebaseAuth.getInstance().getUid(),
+                        pendingArrayList.get(position).getUserUID())).removeValue();
             }
         });
     }
@@ -56,8 +74,12 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<View_Holder.Vie
     }
 
     public void remove(userInfo data) {
-        int position = pendingArrayList.indexOf(data);
-        pendingArrayList.remove(position);
-        notifyItemRemoved(position);
+        for (int i = 0; i < pendingArrayList.size(); i++) {
+            if (data.getUserUID().equals(pendingArrayList.get(i).getUserUID())) {
+                pendingArrayList.remove(i);
+                notifyItemRemoved(i);
+                break;
+            }
+        }
     }
 }

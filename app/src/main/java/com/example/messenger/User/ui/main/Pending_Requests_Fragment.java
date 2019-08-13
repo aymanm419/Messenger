@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +33,13 @@ public class Pending_Requests_Fragment extends Fragment {
     RecyclerView recyclerView;
     PendingRequestsAdapter pendingRequestsAdapter;
 
+    public void addPending(View view) {
+
+    }
+
+    public void deletePending(View view) {
+
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,6 +49,12 @@ public class Pending_Requests_Fragment extends Fragment {
         pendingRequestsAdapter = new PendingRequestsAdapter(view.getContext(), pending);
         recyclerView.setAdapter(pendingRequestsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        recyclerView.setItemAnimator(itemAnimator);
         FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending", FirebaseAuth.getInstance().getUid())).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -47,8 +62,10 @@ public class Pending_Requests_Fragment extends Fragment {
                         dataSnapshot.getKey());
                 pendingRequestsAdapter.insert(user);
                 Activity activity = (usersActivity) getActivity();
-                TabLayout tabLayout = activity.findViewById(R.id.tabs);
-                tabLayout.getTabAt(2).setText("Pending Requests(" + pending.size() + ")");
+                if (activity != null) {
+                    TabLayout tabLayout = activity.findViewById(R.id.tabs);
+                    tabLayout.getTabAt(2).setText("Pending Requests(" + pending.size() + ")");
+                }
             }
 
             @Override
@@ -61,6 +78,11 @@ public class Pending_Requests_Fragment extends Fragment {
                 userInfo user = new userInfo(dataSnapshot.child("nickname").getValue().toString(), dataSnapshot.child("email").getValue().toString(),
                         dataSnapshot.getKey());
                 pendingRequestsAdapter.remove(user);
+                Activity activity = (usersActivity) getActivity();
+                if (activity != null) {
+                    TabLayout tabLayout = activity.findViewById(R.id.tabs);
+                    tabLayout.getTabAt(2).setText("Pending Requests(" + pending.size() + ")");
+                }
             }
 
             @Override

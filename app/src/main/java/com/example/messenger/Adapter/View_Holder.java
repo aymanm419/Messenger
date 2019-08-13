@@ -38,11 +38,13 @@ public class View_Holder {
     static public class View_Holder2 extends RecyclerView.ViewHolder {
         TextView email;
         CircleImageView imageView;
-
+        ImageView checkImageView, cancelImageView;
         public View_Holder2(@NonNull View itemView) {
             super(itemView);
             email = (TextView) itemView.findViewById(R.id.pendingTextView);
             imageView = (CircleImageView) itemView.findViewById(R.id.pendingPicture);
+            checkImageView = (ImageView) itemView.findViewById(R.id.acceptButton);
+            cancelImageView = (ImageView) itemView.findViewById(R.id.rejectButton);
         }
     }
 }
