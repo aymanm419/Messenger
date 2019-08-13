@@ -205,6 +205,7 @@ public class registerActivity extends AppCompatActivity {
     }
 
     public void registerUser(final String email, final String nickName, final FirebaseUser user) {
+        Toast.makeText(this, "Uploading!", Toast.LENGTH_SHORT).show();
         ImageView imageView = findViewById(R.id.uploadImageView);
         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         BitMapHandler bitMapHandler = new BitMapHandler();
@@ -213,7 +214,6 @@ public class registerActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
         byte[] data = baos.toByteArray();
         UploadTask uploadTask = FirebaseStorage.getInstance().getReference().child("profile_images").child(email + ".jpg").putBytes(data);
-        Toast.makeText(this, "Uploading!", Toast.LENGTH_SHORT).show();
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {

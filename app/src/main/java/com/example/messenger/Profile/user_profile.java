@@ -29,12 +29,12 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class user_profile extends AppCompatActivity {
-    userInfo receivingUser;
-    CircleImageView profileImage;
-    TextView nickname, email;
-    FirebaseUser currentUser;
-    ArrayList<userInfo> userFriends;
-
+    private userInfo receivingUser;
+    private CircleImageView profileImage;
+    private TextView nickname, email;
+    private FirebaseUser currentUser;
+    private ArrayList<userInfo> userFriends;
+    private ChildEventListener childEventListener;
     void Init() {
         profileImage = findViewById(R.id.userImageProfile);
         nickname = findViewById(R.id.userNickNameText);
@@ -59,6 +59,8 @@ public class user_profile extends AppCompatActivity {
         }
         FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends/%s", currentUser.getUid(),
                 receivingUser.getUserUID())).setValue(new userInfo(receivingUser.nickname, receivingUser.email, receivingUser.getUserUID()));
+        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", currentUser.getUid(), receivingUser.getUserUID()))
+                .removeValue();
         FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", receivingUser.getUserUID(),
                 currentUser.getUid())).setValue(new userInfo(currentUser.getDisplayName(), currentUser.getEmail(), currentUser.getUid()));
         Toast.makeText(this, "Friend Added Successfully!", Toast.LENGTH_SHORT).show();
@@ -72,6 +74,8 @@ public class user_profile extends AppCompatActivity {
         }
         FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends/%s", currentUser.getUid(),
                 receivingUser.getUserUID())).removeValue();
+        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends/%s", receivingUser.getUserUID(),
+                currentUser.getUid())).removeValue();
         Toast.makeText(this, "Friend Deleted Successfully!", Toast.LENGTH_SHORT).show();
     }
 
@@ -95,7 +99,7 @@ public class user_profile extends AppCompatActivity {
                 Toast.makeText(user_profile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends", currentUser.getUid())).addChildEventListener(new ChildEventListener() {
+        childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 userFriends.add(new userInfo(dataSnapshot.child("nickname").getValue().toString(),
@@ -126,6 +130,13 @@ public class user_profile extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends", currentUser.getUid())).addChildEventListener(childEventListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        FirebaseDatabase.getInstance().getReference().removeEventListener(childEventListener);
+        super.onDestroy();
     }
 }

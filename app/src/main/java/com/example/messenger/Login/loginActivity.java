@@ -39,7 +39,7 @@ public class loginActivity extends AppCompatActivity {
             Toast.makeText(this, "Please insert your information!", Toast.LENGTH_SHORT).show();
             return;
         }
-        mAuth.signInWithEmailAndPassword(emailView.getText().toString(), passView.getText().toString())
+        mAuth.signInWithEmailAndPassword(emailView.getText().toString().replace(" ", ""), passView.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {

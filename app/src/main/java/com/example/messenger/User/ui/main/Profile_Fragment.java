@@ -25,6 +25,7 @@ public class Profile_Fragment extends Fragment {
     private CircleImageView circleImageView;
     private TextView textView;
     private TextView nickname;
+    private OnSuccessListener onSuccessListener;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,12 +36,13 @@ public class Profile_Fragment extends Fragment {
         nickname = view.findViewById(R.id.userNickNameText);
         textView.setText(mUser.getEmail());
         nickname.setText(mUser.getDisplayName());
-        FirebaseStorage.getInstance().getReference().child("profile_images/" + mUser.getEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        onSuccessListener = new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 GlideApp.with(view.getContext()).load(uri).into(circleImageView);
             }
-        });
+        };
+        FirebaseStorage.getInstance().getReference().child("profile_images/" + mUser.getEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(onSuccessListener);
         return view;
     }
 }

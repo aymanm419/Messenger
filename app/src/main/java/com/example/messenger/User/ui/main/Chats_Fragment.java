@@ -2,13 +2,12 @@ package com.example.messenger.User.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.example.messenger.Adapter.UsersAdapter;
 import com.example.messenger.Chat.ChatActivity;
 import com.example.messenger.R;
-import com.example.messenger.User.AddUser;
 import com.example.messenger.User.userInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 public class Chats_Fragment extends Fragment {
     ListView userListView = null;
@@ -36,7 +33,7 @@ public class Chats_Fragment extends Fragment {
     private DatabaseReference dbR;
     public ArrayList<userInfo> users;
     private UsersAdapter usersAdapter;
-
+    private ChildEventListener childEventListener = null;
     public void Init(final View view) {
         dbR = FirebaseDatabase.getInstance().getReference();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -51,10 +48,11 @@ public class Chats_Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chats_fragment, container, false);
         Init(view);
-        dbR.child(String.format("users/%s/friends", mUser.getUid())).addChildEventListener(new ChildEventListener() {
+        childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
+                    Log.i("info", "1");
                     users.add(new userInfo(dataSnapshot.child("nickname").getValue().toString()
                             , dataSnapshot.child("email").getValue().toString(), dataSnapshot.getKey()));
                     usersAdapter.notifyDataSetChanged();
@@ -85,7 +83,8 @@ public class Chats_Fragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
-        });
+        };
+        dbR.child(String.format("users/%s/friends", mUser.getUid())).addChildEventListener(childEventListener);
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -95,5 +94,11 @@ public class Chats_Fragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        dbR.removeEventListener(childEventListener);
+        super.onDestroy();
     }
 }

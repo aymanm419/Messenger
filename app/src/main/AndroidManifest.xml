@@ -18,7 +18,6 @@
             android:label="@string/title_activity_users"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Chat.ChatActivity" />
-        <activity android:name=".User.AddUser" />
         <activity android:name=".Register.registerActivity" />
         <activity android:name=".Login.loginActivity">
             <intent-filter>

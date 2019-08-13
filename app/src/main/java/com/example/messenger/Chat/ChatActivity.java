@@ -45,13 +45,14 @@ import static com.example.messenger.Register.registerActivity.PICK_IMAGE;
 
 public class ChatActivity extends AppCompatActivity {
     private static final int REQUEST_WRITE_STORAGE_REQUEST_CODE = 2;
-    RecyclerView chatListView;
-    TextView chatTextBox;
-    DatabaseReference dbR;
-    FirebaseAuth mAuth;
-    ArrayList<MessageInfo> messages;
-    userInfo recivingUser;
-    MessageAdapter messageAdapter;
+    private RecyclerView chatListView;
+    private TextView chatTextBox;
+    private DatabaseReference dbR;
+    private FirebaseAuth mAuth;
+    private ArrayList<MessageInfo> messages;
+    private userInfo recivingUser;
+    private MessageAdapter messageAdapter;
+    private ChildEventListener childEventListener;
     public static final int MESSAGE_TEXT = 0;
     public static final int MESSAGE_PHOTO = 1;
     public static final int MESSAGE_NO_LAST_SEEN = 2;
@@ -103,6 +104,35 @@ public class ChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         messages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, messages);
+        childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                MessageInfo messageInfo = new MessageInfo(dataSnapshot.child("messageContent").getValue().toString(), dataSnapshot.child("senderEmail").getValue().toString()
+                        , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey());
+                messageAdapter.insert(messageInfo);
+                chatListView.getLayoutManager().scrollToPosition(0);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,35 +150,7 @@ public class ChatActivity extends AppCompatActivity {
         itemAnimator.setRemoveDuration(1000);
         chatListView.setItemAnimator(itemAnimator);
         dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        MessageInfo messageInfo = new MessageInfo(dataSnapshot.child("messageContent").getValue().toString(), dataSnapshot.child("senderEmail").getValue().toString()
-                                , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey());
-                        messageAdapter.insert(messageInfo);
-                        chatListView.getLayoutManager().scrollToPosition(0);
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                .addChildEventListener(childEventListener);
     }
 
     public void sendMessage(View view) {
@@ -244,5 +246,11 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        dbR.removeEventListener(childEventListener);
+        super.onDestroy();
     }
 }

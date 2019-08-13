@@ -47,7 +47,9 @@ public class Add_Users_Fragment extends Fragment {
     UsersAdapter usersAdapter;
     DatabaseReference dbR;
     FirebaseUser fbu;
-
+    TextWatcher textWatcher;
+    AdapterView.OnItemClickListener onItemClickListener;
+    ValueEventListener valueEventListener;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class Add_Users_Fragment extends Fragment {
         listView.setAdapter(usersAdapter);
         dbR = FirebaseDatabase.getInstance().getReference();
         fbu = FirebaseAuth.getInstance().getCurrentUser();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        onItemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Intent intent = new Intent(view.getContext(), user_profile.class);
@@ -67,8 +69,8 @@ public class Add_Users_Fragment extends Fragment {
                 startActivity(intent);
                 return;
             }
-        });
-        friendTextView.addTextChangedListener(new TextWatcher() {
+        };
+        textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -76,14 +78,9 @@ public class Add_Users_Fragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
                 users.clear();
                 usersAdapter.notifyDataSetChanged();
-                dbR.child("users").orderByChild("email").equalTo(s.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                valueEventListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -93,13 +90,28 @@ public class Add_Users_Fragment extends Fragment {
                         }
                         usersAdapter.notifyDataSetChanged();
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });
+                };
+                dbR.child("users").orderByChild("email").equalTo(s.toString()).limitToFirst(1).addListenerForSingleValueEvent(valueEventListener);
             }
-        });
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+        listView.setOnItemClickListener(onItemClickListener);
+        friendTextView.addTextChangedListener(textWatcher);
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        friendTextView.removeTextChangedListener(textWatcher);
+        dbR.removeEventListener(valueEventListener);
+        super.onDestroy();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.messenger.User.ui.main;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,13 +35,6 @@ public class Pending_Requests_Fragment extends Fragment {
     RecyclerView recyclerView;
     PendingRequestsAdapter pendingRequestsAdapter;
 
-    public void addPending(View view) {
-
-    }
-
-    public void deletePending(View view) {
-
-    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,11 +56,11 @@ public class Pending_Requests_Fragment extends Fragment {
                 userInfo user = new userInfo(dataSnapshot.child("nickname").getValue().toString(), dataSnapshot.child("email").getValue().toString(),
                         dataSnapshot.getKey());
                 pendingRequestsAdapter.insert(user);
-                Activity activity = (usersActivity) getActivity();
+               /* Activity activity = (usersActivity) getActivity();
                 if (activity != null) {
                     TabLayout tabLayout = activity.findViewById(R.id.tabs);
                     tabLayout.getTabAt(2).setText("Pending Requests(" + pending.size() + ")");
-                }
+                }*/
             }
 
             @Override
