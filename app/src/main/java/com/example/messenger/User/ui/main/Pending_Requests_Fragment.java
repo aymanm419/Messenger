@@ -96,7 +96,6 @@ public class Pending_Requests_Fragment extends Fragment {
                 userInfo user = new userInfo(dataSnapshot.child("nickname").getValue().toString(), dataSnapshot.child("email").getValue().toString(),
                         dataSnapshot.getKey());
                 pendingRequestsAdapter.insert(user);
-                Log.i("Info", String.valueOf(pending.size()));
                 if (activity != null) {
                     TabLayout tabLayout = activity.findViewById(R.id.tabs);
                     tabLayout.getTabAt(2).setText("Pending Requests(" + pending.size() + ")");
