@@ -101,7 +101,7 @@ public class Pending_Requests_Fragment extends Fragment {
                     TabLayout tabLayout = activity.findViewById(R.id.tabs);
                     tabLayout.getTabAt(2).setText("Pending Requests(" + pending.size() + ")");
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(view.getContext());
-                    mBuilder.setSmallIcon(R.drawable.check_green_mark);
+                    mBuilder.setSmallIcon(R.drawable.ic_person_add_black_24dp);
                     mBuilder.setContentTitle("New Friend Request!");
                     mBuilder.setContentText(dataSnapshot.child("nickname").getValue().toString() + " Sent you a friend request.");
                     mBuilder.build();

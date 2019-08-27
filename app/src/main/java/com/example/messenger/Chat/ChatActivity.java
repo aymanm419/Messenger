@@ -35,6 +35,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
@@ -66,6 +67,8 @@ public class ChatActivity extends AppCompatActivity {
         private String messageContent;
         private String senderEmail;
         private int messageType = 0;
+        private boolean messageNotified = false;
+        @Exclude
         private String messageUID = null;
         public MessageInfo() {
 
@@ -76,12 +79,16 @@ public class ChatActivity extends AppCompatActivity {
             this.senderEmail = _senderEmail;
         }
 
+        public MessageInfo(String _messageContent, String _senderEmail, boolean _messageNotified) {
+            this.messageContent = _messageContent;
+            this.senderEmail = _senderEmail;
+            this.messageNotified = _messageNotified;
+        }
         public MessageInfo(String _messageContent, String _senderEmail, int _messageType) {
             this.messageContent = _messageContent;
             this.senderEmail = _senderEmail;
             this.messageType = _messageType;
         }
-
         public MessageInfo(String _messageContent, String _senderEmail, int _messageType, String _messageUID) {
             this.messageContent = _messageContent;
             this.senderEmail = _senderEmail;
@@ -98,6 +105,15 @@ public class ChatActivity extends AppCompatActivity {
 
         public int getMessageType() {
             return messageType;
+        }
+
+        public boolean isMessageNotified() {
+            return messageNotified;
+        }
+
+        @Exclude
+        public String getMessageUID() {
+            return messageUID;
         }
     }
 
@@ -122,13 +138,6 @@ public class ChatActivity extends AppCompatActivity {
                         , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey());
                 messageAdapter.insert(messageInfo);
                 chatListView.getLayoutManager().scrollToPosition(0);
-                /*TBD ->> NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-                mBuilder.setSmallIcon(R.drawable.check_green_mark);
-                mBuilder.setContentTitle("New Friend Request!");
-                mBuilder.setContentText(dataSnapshot.child("nickname").getValue().toString() + " Sent you a friend request.");
-                mBuilder.build();
-                NotificationManager notification = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notification.notify(createID(), mBuilder.build());*/
             }
 
             @Override
@@ -171,10 +180,6 @@ public class ChatActivity extends AppCompatActivity {
         itemAnimator.setAddDuration(1000);
         itemAnimator.setRemoveDuration(1000);
         chatListView.setItemAnimator(itemAnimator);
-        if (childEventListener != null)
-            dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
-                    .removeEventListener(childEventListener);
-
         dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
                 .addChildEventListener(childEventListener);
 
@@ -184,19 +189,11 @@ public class ChatActivity extends AppCompatActivity {
         if (chatTextBox.getText().length() == 0)
             return;
         try {
-            //Add yourself to receiver friend list if first message(Does nothing if already added)
-            if (messages.isEmpty()) {
-                dbR.child(String.format("users/%s/friends/%s", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
-                        .setValue(
-                                new userInfo(mAuth.getCurrentUser().getDisplayName(), mAuth.getCurrentUser().getEmail(),
-                                        mAuth.getCurrentUser().getUid())
-                        );
-            }
             dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
-                    .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail()
+                    .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), true
             ));
             dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
-                    .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail()
+                    .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), false
             ));
             chatTextBox.setText("");
         } catch (Exception e) {

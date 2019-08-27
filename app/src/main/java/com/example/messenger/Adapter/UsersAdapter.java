@@ -1,5 +1,6 @@
 package com.example.messenger.Adapter;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.example.messenger.Chat.ChatActivity.MessageInfo;
 import com.example.messenger.Tools.*;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.example.messenger.Chat.ChatActivity.MESSAGE_NO_LAST_SEEN;
 import static com.example.messenger.Chat.ChatActivity.MESSAGE_PHOTO;
 
@@ -42,10 +45,11 @@ public class UsersAdapter extends BaseAdapter {
     private final int MAX_LAST_MESSAGE_SIZE = 35;
     private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
     private final DatabaseReference dbR = FirebaseDatabase.getInstance().getReference();
-
+    int st = 0;
     public UsersAdapter(Context mContext, ArrayList<userInfo> usersArrayList) {
         this.mContext = mContext;
         this.usersArrayList = usersArrayList;
+
     }
 
     @Override
@@ -76,7 +80,7 @@ public class UsersAdapter extends BaseAdapter {
             }
         });
         Query lastQuery = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), usersArrayList.get(position).getUserUID()))
-                .orderByValue().limitToLast(1);
+                .limitToLast(1);
         lastQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

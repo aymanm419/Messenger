@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,10 +30,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
 import static androidx.core.content.ContextCompat.getSystemService;
+import static com.example.messenger.Chat.ChatActivity.MESSAGE_PHOTO;
 
 public class Chats_Fragment extends Fragment {
     ListView userListView = null;
@@ -41,6 +44,7 @@ public class Chats_Fragment extends Fragment {
     public ArrayList<userInfo> users;
     private UsersAdapter usersAdapter;
     private ChildEventListener childEventListener = null;
+    private ChildEventListener notification = null;
     private Activity activity = null;
 
     public void Init(final View view) {
@@ -51,14 +55,12 @@ public class Chats_Fragment extends Fragment {
         usersAdapter = new UsersAdapter(view.getContext(), users);
         userListView.setAdapter(usersAdapter);
     }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Activity) {
             activity = (Activity) context;
         }
-
     }
 
     @Override
@@ -77,13 +79,9 @@ public class Chats_Fragment extends Fragment {
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                try {
                     users.add(new userInfo(dataSnapshot.child("nickname").getValue().toString()
                             , dataSnapshot.child("email").getValue().toString(), dataSnapshot.getKey()));
                     usersAdapter.notifyDataSetChanged();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
