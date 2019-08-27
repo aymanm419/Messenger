@@ -1,5 +1,7 @@
 package com.example.messenger.User.ui.main;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,11 +28,35 @@ public class Profile_Fragment extends Fragment {
     private TextView textView;
     private TextView nickname;
     private OnSuccessListener onSuccessListener;
+    private Activity activity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        activity = null;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.profile_fragment, container, false);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mUser == null) {
+            if (activity != null) {
+                activity.finish();
+                return null;
+            }
+            return view;
+        }
         circleImageView = (CircleImageView) view.findViewById(R.id.userImageProfile);
         textView = (TextView) view.findViewById(R.id.userEmailAddressText);
         nickname = view.findViewById(R.id.userNickNameText);

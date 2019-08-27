@@ -15,6 +15,8 @@ import com.example.messenger.Tools.GlideApp;
 import com.example.messenger.User.userInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -23,10 +25,16 @@ import java.util.ArrayList;
 public class PendingRequestsAdapter extends RecyclerView.Adapter<View_Holder.View_Holder2> {
     private Context mContext;
     private ArrayList<userInfo> pendingArrayList;
+    private String UID;
+    private DatabaseReference dbr;
+    private FirebaseUser mUser;
 
-    public PendingRequestsAdapter(Context mContext, ArrayList<userInfo> usersArrayList) {
+    public PendingRequestsAdapter(Context mContext, ArrayList<userInfo> usersArrayList, String UID) {
         this.mContext = mContext;
         this.pendingArrayList = usersArrayList;
+        this.UID = UID;
+        dbr = FirebaseDatabase.getInstance().getReference();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @NonNull
@@ -48,17 +56,16 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<View_Holder.Vie
         holder.checkImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends/%s", FirebaseAuth.getInstance().getUid(),
-                        pendingArrayList.get(position).getUserUID())).setValue(pendingArrayList.get(position));
-                FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", FirebaseAuth.getInstance().getUid(),
-                        pendingArrayList.get(position).getUserUID())).removeValue();
+                dbr.child(String.format("users/%s/friends/%s", UID, pendingArrayList.get(position).getUserUID())).setValue(pendingArrayList.get(position));
+                dbr.child(String.format("users/%s/friends/%s", pendingArrayList.get(position).getUserUID(), UID)).setValue(
+                        new userInfo(mUser.getDisplayName(), mUser.getEmail(), mUser.getUid()));
+                dbr.child(String.format("users/%s/pending/%s", UID, pendingArrayList.get(position).getUserUID())).removeValue();
             }
         });
         holder.cancelImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", FirebaseAuth.getInstance().getUid(),
-                        pendingArrayList.get(position).getUserUID())).removeValue();
+                dbr.child(String.format("users/%s/pending/%s", FirebaseAuth.getInstance().getUid(), pendingArrayList.get(position).getUserUID())).removeValue();
             }
         });
     }

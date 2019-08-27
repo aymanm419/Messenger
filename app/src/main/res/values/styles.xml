@@ -16,7 +16,7 @@
         <item name="android:colorPrimary">#771E1E</item>
         <item name="android:textColorPrimary">#141313</item>
         <item name="android:colorAccent">#2B6F2E</item>
-        <item name="colorPrimaryDark">#22397F</item>
+        <item name="colorPrimaryDark">#213A8F</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

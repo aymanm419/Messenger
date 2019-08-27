@@ -4,12 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.messenger.Adapter.MessageAdapter;
 import com.example.messenger.Tools.BitMapHandler;
+import com.example.messenger.User.ui.main.Pending_Requests_Fragment;
 import com.example.messenger.User.userInfo;
 import com.example.messenger.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,21 +41,24 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import static com.example.messenger.Register.registerActivity.PICK_IMAGE;
 
 public class ChatActivity extends AppCompatActivity {
     private static final int REQUEST_WRITE_STORAGE_REQUEST_CODE = 2;
-    private RecyclerView chatListView;
-    private TextView chatTextBox;
-    private DatabaseReference dbR;
-    private FirebaseAuth mAuth;
-    private ArrayList<MessageInfo> messages;
-    private userInfo recivingUser;
-    private MessageAdapter messageAdapter;
-    private ChildEventListener childEventListener;
+    private RecyclerView chatListView = null;
+    private TextView chatTextBox = null;
+    private DatabaseReference dbR = null;
+    private FirebaseAuth mAuth = null;
+    private ArrayList<MessageInfo> messages = null;
+    private userInfo recivingUser = null;
+    private MessageAdapter messageAdapter = null;
+    private ChildEventListener childEventListener = null;
     public static final int MESSAGE_TEXT = 0;
     public static final int MESSAGE_PHOTO = 1;
     public static final int MESSAGE_NO_LAST_SEEN = 2;
@@ -95,6 +101,11 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    public int createID() {
+        Date now = new Date();
+        int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(now));
+        return id;
+    }
     public void Init() {
         String info[] = getIntent().getExtras().getStringArray("information");
         dbR = FirebaseDatabase.getInstance().getReference();
@@ -111,6 +122,13 @@ public class ChatActivity extends AppCompatActivity {
                         , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey());
                 messageAdapter.insert(messageInfo);
                 chatListView.getLayoutManager().scrollToPosition(0);
+                /*TBD ->> NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+                mBuilder.setSmallIcon(R.drawable.check_green_mark);
+                mBuilder.setContentTitle("New Friend Request!");
+                mBuilder.setContentText(dataSnapshot.child("nickname").getValue().toString() + " Sent you a friend request.");
+                mBuilder.build();
+                NotificationManager notification = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                notification.notify(createID(), mBuilder.build());*/
             }
 
             @Override
@@ -137,6 +155,10 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_chat);
         Init();
         chatListView.setAdapter(messageAdapter);
@@ -149,8 +171,13 @@ public class ChatActivity extends AppCompatActivity {
         itemAnimator.setAddDuration(1000);
         itemAnimator.setRemoveDuration(1000);
         chatListView.setItemAnimator(itemAnimator);
+        if (childEventListener != null)
+            dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+                    .removeEventListener(childEventListener);
+
         dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
                 .addChildEventListener(childEventListener);
+
     }
 
     public void sendMessage(View view) {
@@ -250,7 +277,6 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        dbR.removeEventListener(childEventListener);
         super.onDestroy();
     }
 }

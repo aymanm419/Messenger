@@ -57,13 +57,11 @@ public class user_profile extends AppCompatActivity {
             Toast.makeText(this, "You're Already friends.", Toast.LENGTH_SHORT).show();
             return;
         }
-        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends/%s", currentUser.getUid(),
-                receivingUser.getUserUID())).setValue(new userInfo(receivingUser.nickname, receivingUser.email, receivingUser.getUserUID()));
         FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", currentUser.getUid(), receivingUser.getUserUID()))
                 .removeValue();
         FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/pending/%s", receivingUser.getUserUID(),
                 currentUser.getUid())).setValue(new userInfo(currentUser.getDisplayName(), currentUser.getEmail(), currentUser.getUid()));
-        Toast.makeText(this, "Friend Added Successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Friend Request Sent!", Toast.LENGTH_SHORT).show();
     }
 
     public void deleteFriend(View view) {
@@ -82,6 +80,10 @@ public class user_profile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_user_profile);
         Init();
         String info[] = getIntent().getExtras().getStringArray("information");
@@ -136,7 +138,7 @@ public class user_profile extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        FirebaseDatabase.getInstance().getReference().removeEventListener(childEventListener);
         super.onDestroy();
+        FirebaseDatabase.getInstance().getReference().child(String.format("users/%s/friends", currentUser.getUid())).removeEventListener(childEventListener);
     }
 }
