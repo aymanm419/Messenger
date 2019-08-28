@@ -18,9 +18,9 @@
         android:id="@+id/pendingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_100sdp"
+        android:layout_marginStart="@dimen/_80sdp"
         android:layout_marginTop="@dimen/_12sdp"
-        android:textColor="#555050"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pendingPicture" />
@@ -34,7 +34,7 @@
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pendingTextView"
-        app:srcCompat="@drawable/check_green_mark" />
+        app:srcCompat="@drawable/greencheckmark" />
 
     <ImageView
         android:id="@+id/rejectButton"
@@ -45,5 +45,5 @@
         android:scaleType="fitXY"
         app:layout_constraintStart_toEndOf="@+id/acceptButton"
         app:layout_constraintTop_toBottomOf="@+id/pendingTextView"
-        app:srcCompat="@drawable/cancel_red_mark" />
+        app:srcCompat="@drawable/redcrosssign" />
 </androidx.constraintlayout.widget.ConstraintLayout>

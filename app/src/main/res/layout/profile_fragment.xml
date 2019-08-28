@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_30sdp"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/userEmailAddress"
         app:layout_constraintTop_toBottomOf="@+id/userNickNameText" />
@@ -47,7 +47,7 @@
         android:layout_marginStart="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_30sdp"
         android:textAlignment="viewStart"
-        android:textColor="#000000"
+        android:textColor="#FCFCFC"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/userNickName"
         app:layout_constraintTop_toBottomOf="@+id/userImageProfile" />

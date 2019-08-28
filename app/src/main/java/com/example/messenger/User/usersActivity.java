@@ -33,8 +33,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class usersActivity extends AppCompatActivity {
     private long lastTimeClicked = 0;
@@ -44,6 +46,13 @@ public class usersActivity extends AppCompatActivity {
     private DatabaseReference dbR;
     private FirebaseUser mUser;
     private NotificationManagerCompat notificationManager;
+
+    public int createID() {
+        Date now = new Date();
+        int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(now));
+        return id;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,10 +94,13 @@ public class usersActivity extends AppCompatActivity {
                                 if (!messageNotified) {
                                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
                                     mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
-                                    mBuilder.setContentTitle("New Message");
-                                    mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString());
-                                    mBuilder.build();
-                                    notificationManager.notify(dataSnapshot.getKey(), 0, mBuilder.build());
+                                    mBuilder.setContentTitle(dataSnapshot1.child("senderEmail").getValue().toString());
+                                    mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString())
+                                            .setAutoCancel(true)
+                                            .setGroup(dataSnapshot.getKey())
+                                            .setGroupSummary(true)
+                                            .build();
+                                    notificationManager.notify(createID(), mBuilder.build());
                                     dbR.child(String.format("users/%s/friends/%s/messages/%s/messageNotified", mUser.getUid(), dataSnapshot.getKey(),
                                             dataSnapshot1.getKey())).setValue(true);
                                 }
@@ -144,6 +156,7 @@ public class usersActivity extends AppCompatActivity {
         };
         dbR.child(String.format("users/%s/friends", mUser.getUid())).addChildEventListener(childEventListener);
     }
+
     @Override
     public void onBackPressed() {
         long time = (new Date()).getTime();

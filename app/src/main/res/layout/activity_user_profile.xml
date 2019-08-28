@@ -4,43 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     tools:context=".Profile.user_profile">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/userImageProfile"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_120sdp"
-        android:layout_marginStart="124dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/unknown_profile"
-        app:civ_border_color="@color/colorAccent"
-        app:civ_border_width="@dimen/_2sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/addFriendImage"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_30sdp"
-        android:layout_marginTop="@dimen/_40sdp"
-        android:clickable="true"
-        android:onClick="addFriend"
-        android:src="@drawable/ic_person_add_black_24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userEmailAddress" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/removeFriendImage"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_40sdp"
-        android:clickable="true"
-        android:onClick="deleteFriend"
-        android:src="@drawable/ic_remove_circle_black_24dp"
-        app:layout_constraintStart_toEndOf="@+id/addFriendImage"
-        app:layout_constraintTop_toBottomOf="@+id/userEmailAddress" />
 
     <TextView
         android:id="@+id/userEmailAddress"
@@ -60,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_30sdp"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/userEmailAddress"
         app:layout_constraintTop_toBottomOf="@+id/userNickNameText" />
@@ -72,7 +37,7 @@
         android:layout_marginStart="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_30sdp"
         android:textAlignment="viewStart"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toEndOf="@+id/userNickName"
         app:layout_constraintTop_toBottomOf="@+id/userImageProfile" />
@@ -89,5 +54,41 @@
         android:textSize="@dimen/_14ssp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userImageProfile" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/addFriendImage"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:clickable="true"
+        android:onClick="addFriend"
+        android:src="@drawable/addfriendicon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userEmailAddress" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/removeFriendImage"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:clickable="true"
+        android:onClick="deleteFriend"
+        android:src="@drawable/reddeletefriend"
+        app:layout_constraintStart_toEndOf="@+id/addFriendImage"
+        app:layout_constraintTop_toBottomOf="@+id/userEmailAddress" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userImageProfile"
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_120sdp"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/unknown_profile"
+        app:civ_border_color="@color/colorAccent"
+        app:civ_border_width="@dimen/_2sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

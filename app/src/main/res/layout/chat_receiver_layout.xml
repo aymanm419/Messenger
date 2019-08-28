@@ -5,14 +5,16 @@
 
     <TextView
         android:id="@+id/receiverTextView"
-        android:layout_width="@dimen/_230sdp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_60sdp"
         android:layout_marginTop="@dimen/_10sdp"
-        android:background="@android:drawable/editbox_background_normal"
-        android:fontFamily="monospace"
+        android:background="@drawable/textview_border"
+        android:fontFamily="sans-serif-light"
+        android:gravity="left"
+        android:padding="@dimen/_5sdp"
         android:textAppearance="@style/AppTheme"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_14ssp" />
 
     <de.hdodenhof.circleimageview.CircleImageView

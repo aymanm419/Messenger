@@ -5,4 +5,5 @@
     <color name="colorAccent">#FAFAFA</color>
     <color name="ProgressBarColor">#46D4D4</color>
     <color name="colorCursor">#000000</color>
+    <color name="colorHint">#D8D7D7</color>
 </resources>

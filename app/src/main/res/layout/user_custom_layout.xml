@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F5F5"
+    android:background="#000000"
     android:orientation="vertical">
 
 
@@ -16,16 +16,8 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:fontFamily="monospace"
         android:textAppearance="@style/AppTheme"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_14ssp" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/receiverProfilePicture"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:src="@drawable/unknown_profile" />
 
     <TextView
         android:id="@+id/lastMessageTextView"
@@ -36,6 +28,14 @@
         android:layout_marginStart="@dimen/_60sdp"
         android:layout_marginTop="@dimen/_30sdp"
         android:text="No last message"
-        android:textColor="#000000"
+        android:textColor="#CFCDCD"
         android:textSize="@dimen/_10ssp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/receiverProfilePicture"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/unknown_profile" />
 </RelativeLayout>
