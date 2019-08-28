@@ -1,9 +1,17 @@
 package com.example.messenger.User;
 
 import android.app.NotificationManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.messenger.R;
+import com.example.messenger.Tools.GlideApp;
+import com.example.messenger.User.ui.main.Chats_Fragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -16,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +41,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +56,6 @@ public class usersActivity extends AppCompatActivity {
     private DatabaseReference dbR;
     private FirebaseUser mUser;
     private NotificationManagerCompat notificationManager;
-
     public int createID() {
         Date now = new Date();
         int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(now));
@@ -78,6 +87,13 @@ public class usersActivity extends AppCompatActivity {
         initiateNotifications();
     }
 
+    public void addListener(@NonNull DataSnapshot dataSnapshot1) {
+
+    }
+
+    public void removeListener(@NonNull DataSnapshot dataSnapshot1) {
+
+    }
     public void initiateNotifications() {
         childEventListener = new ChildEventListener() {
             @Override
@@ -86,21 +102,40 @@ public class usersActivity extends AppCompatActivity {
                 temporaryListener = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), dataSnapshot.getKey())).limitToLast(1)
                         .addChildEventListener(new ChildEventListener() {
                             @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot1, @Nullable String s) {
+                            public void onChildAdded(@NonNull final DataSnapshot dataSnapshot1, @Nullable String s) {
                                 boolean messageNotified = true;
                                 if (dataSnapshot1.hasChild("messageNotified"))
                                     messageNotified = Boolean.parseBoolean(dataSnapshot1.child("messageNotified").getValue().toString());
-                                Log.i("MessageNotified", String.valueOf(messageNotified));
+
                                 if (!messageNotified) {
-                                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-                                    mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
-                                    mBuilder.setContentTitle(dataSnapshot1.child("senderEmail").getValue().toString());
-                                    mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString())
-                                            .setAutoCancel(true)
-                                            .setGroup(dataSnapshot.getKey())
-                                            .setGroupSummary(true)
-                                            .build();
-                                    notificationManager.notify(createID(), mBuilder.build());
+                                    FirebaseStorage.getInstance().getReference().child("profile_images/" + dataSnapshot1.child("senderEmail").getValue().toString() + ".jpg")
+                                            .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            GlideApp.with(getApplicationContext())
+                                                    .asBitmap()
+                                                    .load(uri).
+                                                    into(new CustomTarget<Bitmap>() {
+                                                        @Override
+                                                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+                                                            mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
+                                                            mBuilder.setContentTitle(dataSnapshot.child("nickname").getValue().toString());
+                                                            mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString())
+                                                                    .setAutoCancel(true)
+                                                                    .setGroup(dataSnapshot.getKey())
+                                                                    .setGroupSummary(true)
+                                                                    .setLargeIcon(resource)
+                                                                    .build();
+                                                            notificationManager.notify(createID(), mBuilder.build());
+                                                        }
+
+                                                        @Override
+                                                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                                                        }
+                                                    });
+                                        }
+                                    });
                                     dbR.child(String.format("users/%s/friends/%s/messages/%s/messageNotified", mUser.getUid(), dataSnapshot.getKey(),
                                             dataSnapshot1.getKey())).setValue(true);
                                 }
