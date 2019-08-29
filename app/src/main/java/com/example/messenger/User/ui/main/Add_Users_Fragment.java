@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +52,9 @@ public class Add_Users_Fragment extends Fragment {
         usersAdapter = new UsersAdapter(view.getContext(), users);
         listView.setAdapter(usersAdapter);
         dbR = FirebaseDatabase.getInstance().getReference();
-        if (textWatcher != null)
+        if (textWatcher != null) {
             friendTextView.removeTextChangedListener(textWatcher);
+        }
         onItemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -63,33 +65,37 @@ public class Add_Users_Fragment extends Fragment {
             }
         };
         textWatcher = new TextWatcher() {
+            boolean mToggle = false;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                users.clear();
-                usersAdapter.notifyDataSetChanged();
-                valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            users.add(new userInfo(snapshot.child("nickname").getValue().toString(),
-                                    snapshot.child("email").getValue().toString(), snapshot.getKey()));
-                            Toast.makeText(getContext(), "Match Found!", Toast.LENGTH_SHORT).show();
-                            dbR.child("users").orderByChild("email").removeEventListener(this);
+            public void onTextChanged(final CharSequence s, int start, int before, int count) {
+                if (mToggle) {
+                    users.clear();
+                    usersAdapter.notifyDataSetChanged();
+                    Log.i("Info", "executed");
+                    dbR.child("users").orderByChild("email").equalTo(s.toString()).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                users.add(new userInfo(snapshot.child("nickname").getValue().toString(),
+                                        snapshot.child("email").getValue().toString(), snapshot.getKey()));
+                                Toast.makeText(getContext(), "Match Found!", Toast.LENGTH_SHORT).show();
+                            }
+                            dbR.child("users").orderByChild("email").equalTo(s.toString()).limitToFirst(1).removeEventListener(this);
+                            usersAdapter.notifyDataSetChanged();
                         }
-                        usersAdapter.notifyDataSetChanged();
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                };
-                dbR.child("users").orderByChild("email").equalTo(s.toString()).limitToFirst(1).addListenerForSingleValueEvent(valueEventListener);
+                        }
+                    });
+                }
+                mToggle = !mToggle;
             }
 
             @Override
