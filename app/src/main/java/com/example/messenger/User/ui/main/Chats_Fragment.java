@@ -23,6 +23,7 @@ import com.example.messenger.Adapter.UsersAdapter;
 import com.example.messenger.Chat.ChatActivity;
 import com.example.messenger.R;
 import com.example.messenger.User.userInfo;
+import com.example.messenger.User.usersActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -34,6 +35,7 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.getSystemService;
 import static com.example.messenger.Chat.ChatActivity.MESSAGE_PHOTO;
 
@@ -46,7 +48,7 @@ public class Chats_Fragment extends Fragment {
     private ChildEventListener childEventListener = null;
     private ChildEventListener notification = null;
     private Activity activity = null;
-
+    final int ACTIVITY_RESULT_CHAT = 100;
     public void Init(final View view) {
         dbR = FirebaseDatabase.getInstance().getReference();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -113,10 +115,21 @@ public class Chats_Fragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent chatIntent = new Intent(view.getContext(), ChatActivity.class);
                 chatIntent.putExtra("information", new String[]{users.get(position).email, users.get(position).nickname, users.get(position).getUserUID()});
-                startActivity(chatIntent);
+                if (activity instanceof usersActivity)
+                    ((usersActivity) activity).removeUserListener(users.get(position).getUserUID());
+                startActivityForResult(chatIntent, ACTIVITY_RESULT_CHAT);
             }
         });
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ACTIVITY_RESULT_CHAT && resultCode == RESULT_OK) {
+            if (activity instanceof usersActivity)
+                ((usersActivity) activity).addUserNotification(data.getExtras().getString("nickname"),
+                        data.getExtras().getString("UID"));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

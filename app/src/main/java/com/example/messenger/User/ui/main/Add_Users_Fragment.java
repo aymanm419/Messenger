@@ -65,7 +65,6 @@ public class Add_Users_Fragment extends Fragment {
             }
         };
         textWatcher = new TextWatcher() {
-            boolean mToggle = false;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -73,7 +72,6 @@ public class Add_Users_Fragment extends Fragment {
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
-                if (mToggle) {
                     users.clear();
                     usersAdapter.notifyDataSetChanged();
                     Log.i("Info", "executed");
@@ -94,8 +92,6 @@ public class Add_Users_Fragment extends Fragment {
 
                         }
                     });
-                }
-                mToggle = !mToggle;
             }
 
             @Override

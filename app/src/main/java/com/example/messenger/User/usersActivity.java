@@ -88,81 +88,90 @@ public class usersActivity extends AppCompatActivity {
         initiateNotifications();
     }
 
-    public void addListener(@NonNull DataSnapshot dataSnapshot1) {
+    public void addUserNotification(final String nickname, final String userUID) {
+        UIDS.add(userUID);
+        temporaryListener = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), userUID)).limitToLast(1)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull final DataSnapshot dataSnapshot1, @Nullable String s) {
+                        boolean messageNotified = true;
+                        if (dataSnapshot1.hasChild("messageNotified"))
+                            messageNotified = Boolean.parseBoolean(dataSnapshot1.child("messageNotified").getValue().toString());
+
+                        if (!messageNotified) {
+                            FirebaseStorage.getInstance().getReference().child("profile_images/" + dataSnapshot1.child("senderEmail").getValue().toString() + ".jpg")
+                                    .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    GlideApp.with(getApplicationContext())
+                                            .asBitmap()
+                                            .load(uri).
+                                            into(new CustomTarget<Bitmap>() {
+                                                @Override
+                                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+                                                    mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
+                                                    mBuilder.setContentTitle(nickname);
+                                                    mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString())
+                                                            .setAutoCancel(true)
+                                                            .setGroup(userUID)
+                                                            .setGroupSummary(true)
+                                                            .setLargeIcon(resource)
+                                                            .build();
+                                                    notificationManager.notify(createID(), mBuilder.build());
+                                                }
+
+                                                @Override
+                                                public void onLoadCleared(@Nullable Drawable placeholder) {
+                                                }
+                                            });
+                                }
+                            });
+                            dbR.child(String.format("users/%s/friends/%s/messages/%s/messageNotified", mUser.getUid(), userUID,
+                                    dataSnapshot1.getKey())).setValue(true);
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+        listeners.add(temporaryListener);
 
     }
 
-    public void removeListener(@NonNull DataSnapshot dataSnapshot1) {
-
+    public void removeUserListener(String userUID) {
+        for (int i = 0; i < UIDS.size(); i++) {
+            if (UIDS.get(i).equals(userUID)) {
+                dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), userUID)).
+                        removeEventListener(listeners.get(i));
+                UIDS.remove(i);
+                listeners.remove(i);
+                break;
+            }
+        }
     }
     public void initiateNotifications() {
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
-                UIDS.add(dataSnapshot.getKey());
-                temporaryListener = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), dataSnapshot.getKey())).limitToLast(1)
-                        .addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull final DataSnapshot dataSnapshot1, @Nullable String s) {
-                                boolean messageNotified = true;
-                                if (dataSnapshot1.hasChild("messageNotified"))
-                                    messageNotified = Boolean.parseBoolean(dataSnapshot1.child("messageNotified").getValue().toString());
-
-                                if (!messageNotified) {
-                                    FirebaseStorage.getInstance().getReference().child("profile_images/" + dataSnapshot1.child("senderEmail").getValue().toString() + ".jpg")
-                                            .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            GlideApp.with(getApplicationContext())
-                                                    .asBitmap()
-                                                    .load(uri).
-                                                    into(new CustomTarget<Bitmap>() {
-                                                        @Override
-                                                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-                                                            mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
-                                                            mBuilder.setContentTitle(dataSnapshot.child("nickname").getValue().toString());
-                                                            mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString())
-                                                                    .setAutoCancel(true)
-                                                                    .setGroup(dataSnapshot.getKey())
-                                                                    .setGroupSummary(true)
-                                                                    .setLargeIcon(resource)
-                                                                    .build();
-                                                            notificationManager.notify(createID(), mBuilder.build());
-                                                        }
-
-                                                        @Override
-                                                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                                                        }
-                                                    });
-                                        }
-                                    });
-                                    dbR.child(String.format("users/%s/friends/%s/messages/%s/messageNotified", mUser.getUid(), dataSnapshot.getKey(),
-                                            dataSnapshot1.getKey())).setValue(true);
-                                }
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                listeners.add(temporaryListener);
+                addUserNotification(dataSnapshot.child("nickname").getValue().toString(), dataSnapshot.getKey());
             }
 
             @Override
@@ -170,16 +179,8 @@ public class usersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                for (int i = 0; i < UIDS.size(); i++) {
-                    if (UIDS.get(i).equals(dataSnapshot.getKey())) {
-                        dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), dataSnapshot.getKey())).
-                                removeEventListener(listeners.get(i));
-                        UIDS.remove(i);
-                        listeners.remove(i);
-                        break;
-                    }
-                }
+            public void onChildRemoved(@NonNull final DataSnapshot dataSnapshot) {
+                removeUserListener(dataSnapshot.getKey());
             }
 
             @Override
@@ -205,10 +206,5 @@ public class usersActivity extends AppCompatActivity {
             finish();
             super.onBackPressed();
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

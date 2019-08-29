@@ -182,7 +182,12 @@ public class ChatActivity extends AppCompatActivity {
         chatListView.setItemAnimator(itemAnimator);
         dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
                 .addChildEventListener(childEventListener);
-
+        Bundle bundle = new Bundle();
+        bundle.putString("UID", recivingUser.getUserUID());
+        bundle.putString("nickname", recivingUser.getNickname());
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        setResult(RESULT_OK, intent);
     }
 
     public void sendMessage(View view) {
@@ -270,10 +275,5 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }
