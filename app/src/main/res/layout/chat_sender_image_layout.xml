@@ -5,24 +5,25 @@
     android:layout_height="wrap_content">
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profilePicture"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:src="@drawable/unknown_profile" />
-
     <ImageView
         android:id="@+id/imageSent"
         android:layout_width="@dimen/_220sdp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="@dimen/_65sdp"
-        android:adjustViewBounds="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/_7sdp"
+        android:layout_marginEnd="@dimen/_65sdp"
+        android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:srcCompat="@android:color/transparent" />
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:src="@drawable/unknown_profile" />
 </RelativeLayout>

@@ -9,11 +9,11 @@
 
     <Button
         android:id="@+id/sendMessageButton"
-        android:layout_width="@dimen/_25sdp"
+        android:layout_width="@dimen/_45sdp"
         android:layout_height="@dimen/_25sdp"
         android:background="@drawable/bluearrowicon"
         android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginEnd="0dp"
         android:onClick="sendMessage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

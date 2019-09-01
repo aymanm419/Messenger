@@ -7,130 +7,6 @@
     android:layout_weight="1"
     tools:context=".Register.registerActivity">
 
-    <ImageView
-        android:id="@+id/RegisterBackground"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/loginbackground" />
-
-    <ImageView
-        android:id="@+id/uploadImageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
-        android:scaleType="fitXY"
-        android:tag="0"
-        app:layout_constraintEnd_toEndOf="@+id/uploadPictureButton"
-        app:layout_constraintStart_toStartOf="@+id/uploadPictureButton"
-        app:layout_constraintTop_toBottomOf="@+id/uploadPictureButton"
-        app:srcCompat="@android:color/transparent" />
-
-    <EditText
-        android:id="@+id/nickNameEditText"
-        style="@style/AppTheme"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_50sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:ems="10"
-        android:hint="Nickname"
-        android:inputType="textPersonName"
-        android:singleLine="true"
-        android:textColor="#F3F0F0"
-        android:textColorHighlight="#F3F0F0"
-        android:textColorHint="#F3F0F0"
-        android:textColorLink="#F3F0F0"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/RegisterBackground" />
-
-    <EditText
-        android:id="@+id/emailRegisterText"
-        style="@style/AppTheme"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_50sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:ems="10"
-        android:singleLine="true"
-        android:hint="Email"
-        android:inputType="textWebEmailAddress|textPersonName"
-        android:textColor="#F3F0F0"
-        android:textColorHighlight="#F3F0F0"
-        android:textColorHint="#F3F0F0"
-        android:textColorLink="#F3F0F0"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickNameEditText" />
-
-    <EditText
-        android:id="@+id/passwordRegisterText"
-        style="@style/AppTheme"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_50sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:ems="10"
-        android:singleLine="true"
-        android:hint="Password"
-        android:inputType="textPersonName|textPassword"
-        android:textColor="#F3F0F0"
-        android:textColorHighlight="#F3F0F0"
-        android:textColorHint="#F3F0F0"
-        android:textColorLink="#F3F0F0"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailRegisterText" />
-
-    <EditText
-        android:id="@+id/passwordConfirmText"
-        style="@style/AppTheme"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_50sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:ems="10"
-        android:singleLine="true"
-        android:hint="Confirm Password"
-        android:inputType="textPersonName|textPassword"
-        android:textColor="#F3F0F0"
-        android:textColorHighlight="#F3F0F0"
-        android:textColorHint="#F3F0F0"
-        android:textColorLink="#F3F0F0"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordRegisterText" />
-
-    <TextView
-        android:id="@+id/passwordStrenghtText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:text="Password Strength"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/_10ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordConfirmText" />
-
-    <TextView
-        android:id="@+id/passwordStrengthPercent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_30sdp"
-        android:layout_marginTop="@dimen/_210sdp"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/_10ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/registerButton"
         style="@style/AppTheme"
@@ -162,6 +38,108 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordStrengthBar" />
 
+    <EditText
+        android:id="@+id/nickNameEditText"
+        style="@style/AppTheme"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:ems="10"
+        android:hint="Nickname"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:textColor="#F3F0F0"
+        android:textColorHighlight="#F3F0F0"
+        android:textColorHint="#F3F0F0"
+        android:textColorLink="#F3F0F0"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/RegisterBackground" />
+
+    <EditText
+        android:id="@+id/emailRegisterText"
+        style="@style/AppTheme"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textWebEmailAddress|textPersonName"
+        android:singleLine="true"
+        android:textColor="#F3F0F0"
+        android:textColorHighlight="#F3F0F0"
+        android:textColorHint="#F3F0F0"
+        android:textColorLink="#F3F0F0"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nickNameEditText" />
+
+    <EditText
+        android:id="@+id/passwordRegisterText"
+        style="@style/AppTheme"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPersonName|textPassword"
+        android:singleLine="true"
+        android:textColor="#F3F0F0"
+        android:textColorHighlight="#F3F0F0"
+        android:textColorHint="#F3F0F0"
+        android:textColorLink="#F3F0F0"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailRegisterText" />
+
+    <EditText
+        android:id="@+id/passwordConfirmText"
+        style="@style/AppTheme"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:ems="10"
+        android:hint="Confirm Password"
+        android:inputType="textPersonName|textPassword"
+        android:singleLine="true"
+        android:textColor="#F3F0F0"
+        android:textColorHighlight="#F3F0F0"
+        android:textColorHint="#F3F0F0"
+        android:textColorLink="#F3F0F0"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordRegisterText" />
+
+    <ImageView
+        android:id="@+id/RegisterBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/loginbackground" />
+
+    <ImageView
+        android:id="@+id/uploadImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="fitXY"
+        android:tag="0"
+        app:layout_constraintEnd_toEndOf="@+id/uploadPictureButton"
+        app:layout_constraintStart_toStartOf="@+id/uploadPictureButton"
+        app:layout_constraintTop_toBottomOf="@+id/uploadPictureButton"
+        app:srcCompat="@android:color/transparent" />
+
     <ProgressBar
         android:id="@+id/passwordStrengthBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -186,5 +164,27 @@
         app:layout_constraintStart_toStartOf="@+id/uploadImageView"
         app:layout_constraintTop_toBottomOf="@+id/uploadImageView"
         tools:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/passwordStrenghtText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="Password Strength"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/_10ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordConfirmText" />
+
+    <TextView
+        android:id="@+id/passwordStrengthPercent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_210sdp"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/_10ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

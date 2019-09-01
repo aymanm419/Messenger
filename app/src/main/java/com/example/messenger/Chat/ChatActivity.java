@@ -276,4 +276,10 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        messageAdapter.setDestroyed(true);
+        super.onBackPressed();
+    }
 }

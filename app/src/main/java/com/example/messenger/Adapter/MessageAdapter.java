@@ -1,13 +1,13 @@
 package com.example.messenger.Adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.net.Uri;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,18 +15,29 @@ import com.example.messenger.Chat.ChatActivity;
 import com.example.messenger.R;
 import com.example.messenger.Tools.GlideApp;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private ArrayList<ChatActivity.MessageInfo> messageArrayList;
+    private FirebaseUser mUser;
+    private boolean isDestroyed = false;
     public MessageAdapter(Context mContext, ArrayList<ChatActivity.MessageInfo> usersArrayList) {
         this.mContext = mContext;
         this.messageArrayList = usersArrayList;
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    public void setDestroyed(boolean destroy) {
+        isDestroyed = destroy;
     }
 
     @NonNull
@@ -43,6 +54,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_image_layout, parent, false);
                 holder = new View_Holder.View_Holder1(v);
                 break;
+            case 2:
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_sender_layout, parent, false);
+                holder = new View_Holder.View_Holder2(v);
+                break;
+            case 3:
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_sender_image_layout, parent, false);
+                holder = new View_Holder.View_Holder3(v);
+                break;
         }
         return holder;
     }
@@ -56,7 +75,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        GlideApp.with(mContext).load(uri).into(view_holder0.imageView);
+                        if (!isDestroyed)
+                            GlideApp.with(mContext).load(uri).into(view_holder0.imageView);
                     }
                 });
                 break;
@@ -65,20 +85,63 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        GlideApp.with(mContext).load(uri).into(view_holder1.imageView);
+                        if (!isDestroyed)
+                            GlideApp.with(mContext).load(uri).into(view_holder1.imageView);
                     }
                 });
                 FirebaseStorage.getInstance().getReference().child("chat_images/" + messageArrayList.get(position).getMessageContent()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        GlideApp.with(mContext).load(uri).fitCenter().into(view_holder1.messageImage);
+                        if (!isDestroyed)
+                            GlideApp.with(mContext).load(uri).fitCenter().into(view_holder1.messageImage);
                     }
                 });
+                break;
+            case 2:
+                final View_Holder.View_Holder2 view_holder2 = (View_Holder.View_Holder2) holder;
+                view_holder2.message.setText(messageArrayList.get(position).getMessageContent());
+                Paint paint = new Paint(view_holder2.message.getPaint());
+                ViewGroup.LayoutParams params = view_holder2.message.getLayoutParams();
+                int availableWidth = params.width - view_holder2.message.getPaddingLeft() - view_holder2.message.getPaddingRight();
+                int textWidth = (int) Math.ceil(paint.measureText(view_holder2.message.getText().toString()));
+                if (textWidth <= availableWidth) {
+                    view_holder2.message.setGravity(Gravity.RIGHT);
+                } else {
+                    view_holder2.message.setGravity(Gravity.LEFT);
+                }
+                FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if (!isDestroyed)
+                            GlideApp.with(mContext).load(uri).into(view_holder2.imageView);
+                    }
+                });
+                break;
+            case 3:
+                final View_Holder.View_Holder3 view_holder3 = (View_Holder.View_Holder3) holder;
+                FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if (!isDestroyed)
+                            GlideApp.with(mContext).load(uri).into(view_holder3.imageView);
+                    }
+                });
+                FirebaseStorage.getInstance().getReference().child("chat_images/" + messageArrayList.get(position).getMessageContent()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if (!isDestroyed)
+                            GlideApp.with(mContext).load(uri).fitCenter().into(view_holder3.messageImage);
+                    }
+                });
+            default:
+                break;
         }
     }
 
     @Override
     public int getItemViewType(int position) {
+        if (mUser.getEmail().equals(messageArrayList.get(position).getSenderEmail()))
+            return 2 + messageArrayList.get(position).getMessageType();
         return messageArrayList.get(position).getMessageType();
     }
 
@@ -95,7 +158,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     // Insert a new item to the RecyclerView on a predefined position
     public void insert(ChatActivity.MessageInfo data) {
         messageArrayList.add(0, data);
-
         notifyItemInserted(0);
     }
 

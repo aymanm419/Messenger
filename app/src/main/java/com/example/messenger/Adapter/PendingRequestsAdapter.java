@@ -22,7 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
-public class PendingRequestsAdapter extends RecyclerView.Adapter<View_Holder.View_Holder2> {
+public class PendingRequestsAdapter extends RecyclerView.Adapter<View_Holder.View_Holder4> {
     private Context mContext;
     private ArrayList<userInfo> pendingArrayList;
     private String UID;
@@ -39,13 +39,13 @@ public class PendingRequestsAdapter extends RecyclerView.Adapter<View_Holder.Vie
 
     @NonNull
     @Override
-    public View_Holder.View_Holder2 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public View_Holder.View_Holder4 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pending_row, parent, false);
-        return new View_Holder.View_Holder2(view);
+        return new View_Holder.View_Holder4(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final View_Holder.View_Holder2 holder, final int position) {
+    public void onBindViewHolder(@NonNull final View_Holder.View_Holder4 holder, final int position) {
         holder.email.setText(pendingArrayList.get(position).email);
         FirebaseStorage.getInstance().getReference().child(String.format("profile_images/%s.jpg", pendingArrayList.get(position).email)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

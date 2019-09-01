@@ -74,7 +74,7 @@ public class usersActivity extends AppCompatActivity {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         dbR = FirebaseDatabase.getInstance().getReference();
         notificationManager = NotificationManagerCompat.from(this);
-        listeners = new ArrayList<ChildEventListener>();
+        listeners = new ArrayList<>();
         setContentView(R.layout.activity_users);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);

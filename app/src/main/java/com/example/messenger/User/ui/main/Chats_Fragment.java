@@ -126,7 +126,8 @@ public class Chats_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ACTIVITY_RESULT_CHAT && resultCode == RESULT_OK) {
-            if (activity instanceof usersActivity)
+            if (activity instanceof usersActivity && data.getExtras() != null
+                    && data.getExtras().containsKey("nickname") && data.getExtras().containsKey("UID"))
                 ((usersActivity) activity).addUserNotification(data.getExtras().getString("nickname"),
                         data.getExtras().getString("UID"));
         }
