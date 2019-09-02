@@ -30,15 +30,16 @@ Be sure to integrate them into your **build.gradle** to be able to deploy
 
 ---
 
+
 # Screenshots
 
-![alt text](https://i.gyazo.com/02cfb6bc42ad1227d954f0548acacd8b.png "Chats Page")
+![alt text](https://i.gyazo.com/0781f798fb0b22a1cf6bd1ce985b8588.png "Chats Page")
 
-![alt text](https://i.gyazo.com/7156711bcfdbf15bca29515b0d934c29.png "Profile Page")
+![alt text](https://i.gyazo.com/0bdef417d4ea654fb92d9f3cb31a7e08.png "Profile Page")
 
-![alt text](https://i.gyazo.com/8de374af7d9c193319daf93b522c40bb.png "Users profile")
+![alt text](https://i.gyazo.com/469f37f7555d0fdad39b0769176c82c2.png "Users profile")
 
-![alt text](https://i.gyazo.com/47aff6d51bd359900dc5d1cd407d1092.png "Users profile")
+![alt text](https://i.gyazo.com/47aff6d51bd359900dc5d1cd407d1092.png "Not seen chat")
 
-![alt text](https://i.gyazo.com/26d26286f2b3843d3612232a62e68569.png "Users profile")
+![alt text](https://i.gyazo.com/412b83c3f098a4c94de17bcf9771c8b5.png "Seen chat")
 
