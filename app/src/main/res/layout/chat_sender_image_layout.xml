@@ -26,4 +26,12 @@
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_10sdp"
         android:src="@drawable/unknown_profile" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/seenImage"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_alignBottom="@+id/imageSent"
+        android:layout_toStartOf="@+id/imageSent"
+        android:src="@drawable/deliveredcheckmark" />
 </RelativeLayout>

@@ -4,29 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.messenger.Adapter.MessageAdapter;
 import com.example.messenger.Tools.BitMapHandler;
-import com.example.messenger.User.ui.main.Pending_Requests_Fragment;
 import com.example.messenger.User.userInfo;
 import com.example.messenger.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,6 +39,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -52,24 +47,32 @@ import static com.example.messenger.Register.registerActivity.PICK_IMAGE;
 
 public class ChatActivity extends AppCompatActivity {
     private static final int REQUEST_WRITE_STORAGE_REQUEST_CODE = 2;
-    private RecyclerView chatListView = null;
-    private TextView chatTextBox = null;
-    private DatabaseReference dbR = null;
-    private FirebaseAuth mAuth = null;
-    private ArrayList<MessageInfo> messages = null;
-    private userInfo recivingUser = null;
-    private MessageAdapter messageAdapter = null;
-    private ChildEventListener childEventListener = null;
+    private RecyclerView chatListView;
+    private TextView chatTextBox;
+    private DatabaseReference dbR;
+    private FirebaseAuth mAuth;
+    private ArrayList<MessageInfo> messages;
+    private userInfo recivingUser;
+    private MessageAdapter messageAdapter;
+    private ChildEventListener childEventListener, seenEventListener, makeSeenEventListener;
+    private HashMap<String, Integer> UIDToIndex;
+    private int messageCounter = 0;
     public static final int MESSAGE_TEXT = 0;
     public static final int MESSAGE_PHOTO = 1;
     public static final int MESSAGE_NO_LAST_SEEN = 2;
+    public static final int MESSAGE_STATE_PENDING = 0;
+    public static final int MESSAGE_STATE_DELIVERED = 1;
+    public static final int MESSAGE_STATE_SEEN = 2;
+
     public static class MessageInfo {
         private String messageContent;
         private String senderEmail;
         private int messageType = 0;
         private boolean messageNotified = false;
+        private int messageState = 0;
         @Exclude
         private String messageUID = null;
+
         public MessageInfo() {
 
         }
@@ -84,17 +87,29 @@ public class ChatActivity extends AppCompatActivity {
             this.senderEmail = _senderEmail;
             this.messageNotified = _messageNotified;
         }
-        public MessageInfo(String _messageContent, String _senderEmail, int _messageType) {
+
+        private MessageInfo(String _messageContent, String _senderEmail, boolean _messageNotified, int _messageState) {
+            this.messageContent = _messageContent;
+            this.senderEmail = _senderEmail;
+            this.messageNotified = _messageNotified;
+            this.messageState = _messageState;
+        }
+
+        private MessageInfo(String _messageContent, String _senderEmail, int _messageType, int _messageState) {
             this.messageContent = _messageContent;
             this.senderEmail = _senderEmail;
             this.messageType = _messageType;
+            this.messageState = _messageState;
         }
-        public MessageInfo(String _messageContent, String _senderEmail, int _messageType, String _messageUID) {
+
+        private MessageInfo(String _messageContent, String _senderEmail, int _messageType, String _messageUID, int _messageState) {
             this.messageContent = _messageContent;
             this.senderEmail = _senderEmail;
             this.messageType = _messageType;
             this.messageUID = _messageUID;
+            this.messageState = _messageState;
         }
+
         public String getMessageContent() {
             return messageContent;
         }
@@ -105,6 +120,14 @@ public class ChatActivity extends AppCompatActivity {
 
         public int getMessageType() {
             return messageType;
+        }
+
+        public int getMessageState() {
+            return messageState;
+        }
+
+        private void setMessageState(int messageState) {
+            this.messageState = messageState;
         }
 
         public boolean isMessageNotified() {
@@ -119,11 +142,11 @@ public class ChatActivity extends AppCompatActivity {
 
     public int createID() {
         Date now = new Date();
-        int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(now));
-        return id;
+        return Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(now));
     }
+
     public void Init() {
-        String info[] = getIntent().getExtras().getStringArray("information");
+        String[] info = getIntent().getExtras().getStringArray("information");
         dbR = FirebaseDatabase.getInstance().getReference();
         recivingUser = new userInfo(info[1], info[0], info[2]);
         chatListView = findViewById(R.id.chatListView);
@@ -131,13 +154,77 @@ public class ChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         messages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, messages);
+        UIDToIndex = new HashMap<>();
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 MessageInfo messageInfo = new MessageInfo(dataSnapshot.child("messageContent").getValue().toString(), dataSnapshot.child("senderEmail").getValue().toString()
-                        , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey());
+                        , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey(),
+                        Integer.parseInt(dataSnapshot.child("messageState").getValue().toString()));
+                UIDToIndex.put(dataSnapshot.getKey(), messageCounter);
+                messageCounter++;
                 messageAdapter.insert(messageInfo);
-                chatListView.getLayoutManager().scrollToPosition(0);
+                chatListView.getLayoutManager().scrollToPosition(messages.size() - 1);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        seenEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (Integer.parseInt(dataSnapshot.child("messageState").getValue().toString()) == MESSAGE_STATE_SEEN) {
+                    String UID = dataSnapshot.getKey();
+                    int pos = UIDToIndex.get(UID);
+                    messages.get(pos).setMessageState(MESSAGE_STATE_SEEN);
+                    messageAdapter.notifyItemChanged(pos);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        makeSeenEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (Integer.parseInt(dataSnapshot.child("messageState").getValue().toString()) == MESSAGE_STATE_DELIVERED &&
+                        dataSnapshot.child("senderEmail").getValue().toString().equals(recivingUser.getEmail())) {
+                    dbR.child(String.format("users/%s/friends/%s/messages/%s/messageState", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID(),
+                            dataSnapshot.getKey())).setValue(MESSAGE_STATE_SEEN);
+                }
             }
 
             @Override
@@ -161,6 +248,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,17 +259,19 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         Init();
         chatListView.setAdapter(messageAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         chatListView.setLayoutManager(linearLayoutManager);
         chatListView.setHasFixedSize(true);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        itemAnimator.setAddDuration(1000);
-        itemAnimator.setRemoveDuration(1000);
+        itemAnimator.setAddDuration(300);
+        itemAnimator.setRemoveDuration(300);
         chatListView.setItemAnimator(itemAnimator);
-        dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
                 .addChildEventListener(childEventListener);
+        dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+                .addChildEventListener(makeSeenEventListener);
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
+                .addChildEventListener(seenEventListener);
         Bundle bundle = new Bundle();
         bundle.putString("UID", recivingUser.getUserUID());
         bundle.putString("nickname", recivingUser.getNickname());
@@ -194,11 +284,15 @@ public class ChatActivity extends AppCompatActivity {
         if (chatTextBox.getText().length() == 0)
             return;
         try {
-            dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
-                    .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), true
+            String mGroupId = dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+                    .push().getKey();
+            dbR.child(String.format("users/%s/friends/%s/messages/%s", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID(),
+                    mGroupId)).setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), true,
+                    MESSAGE_STATE_SEEN
             ));
-            dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
-                    .push().setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), false
+            dbR.child(String.format("users/%s/friends/%s/messages/%s", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid(),
+                    mGroupId)).setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), false,
+                    MESSAGE_STATE_DELIVERED
             ));
             chatTextBox.setText("");
         } catch (Exception e) {
@@ -240,6 +334,7 @@ public class ChatActivity extends AppCompatActivity {
     private boolean hasWritePermissions() {
         return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
+
     public void uploadPhoto(final String name, Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         BitMapHandler bitMapHandler = new BitMapHandler();
@@ -250,11 +345,17 @@ public class ChatActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
-                        .push().setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO
+                String mGroupId = dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+                        .push().getKey();
+                dbR.child(String.format("users/%s/friends/%s/messages/%s", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID(),
+                        mGroupId))
+                        .setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO,
+                                MESSAGE_STATE_SEEN
                 ));
-                dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
-                        .push().setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO
+                dbR.child(String.format("users/%s/friends/%s/messages/%s", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid(),
+                        mGroupId))
+                        .setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO,
+                                MESSAGE_STATE_DELIVERED
                 ));
             }
         });
@@ -280,6 +381,12 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         messageAdapter.setDestroyed(true);
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
+                .removeEventListener(childEventListener);
+        dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+                .removeEventListener(makeSeenEventListener);
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
+                .removeEventListener(seenEventListener);
         super.onBackPressed();
     }
 }

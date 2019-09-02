@@ -13,7 +13,7 @@
         android:layout_toStartOf="@+id/profilePicture"
         android:background="@drawable/receivingtext_border"
         android:gravity="end"
-        android:maxWidth="@dimen/_200sdp"
+        android:maxWidth="@dimen/_220sdp"
         android:padding="@dimen/_6sdp"
         android:textColor="#000000"
         android:textSize="@dimen/_14ssp" />
@@ -27,4 +27,12 @@
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
         android:src="@drawable/unknown_profile" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/seenImage"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_alignBottom="@+id/textMessage"
+        android:layout_toStartOf="@+id/textMessage"
+        android:src="@drawable/deliveredcheckmark" />
 </RelativeLayout>

@@ -35,23 +35,24 @@ public class View_Holder {
 
     static public class View_Holder2 extends RecyclerView.ViewHolder {
         TextView message;
-        CircleImageView imageView;
-
+        CircleImageView imageView, seenImage;
         public View_Holder2(@NonNull View itemView) {
             super(itemView);
             message = (TextView) itemView.findViewById(R.id.textMessage);
             imageView = (CircleImageView) itemView.findViewById(R.id.profilePicture);
+            seenImage = (CircleImageView) itemView.findViewById(R.id.seenImage);
         }
     }
 
     static public class View_Holder3 extends RecyclerView.ViewHolder {
         ImageView messageImage;
-        CircleImageView imageView;
+        CircleImageView imageView, seenImage;
 
         public View_Holder3(@NonNull View itemView) {
             super(itemView);
             messageImage = (ImageView) itemView.findViewById(R.id.imageSent);
             imageView = (CircleImageView) itemView.findViewById(R.id.profilePicture);
+            seenImage = (CircleImageView) itemView.findViewById(R.id.seenImage);
         }
     }
 

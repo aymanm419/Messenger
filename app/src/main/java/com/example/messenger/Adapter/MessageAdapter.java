@@ -21,6 +21,8 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
+import static com.example.messenger.Chat.ChatActivity.MESSAGE_STATE_SEEN;
+
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private ArrayList<ChatActivity.MessageInfo> messageArrayList;
@@ -109,6 +111,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 } else {
                     view_holder2.message.setGravity(Gravity.LEFT);
                 }
+                if (messageArrayList.get(position).getMessageState() == MESSAGE_STATE_SEEN)
+                    view_holder2.seenImage.setImageResource(R.drawable.greencheckmark);
+                else
+                    view_holder2.seenImage.setImageResource(R.drawable.deliveredcheckmark);
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -119,6 +125,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 break;
             case 3:
                 final View_Holder.View_Holder3 view_holder3 = (View_Holder.View_Holder3) holder;
+                if (messageArrayList.get(position).getMessageState() == MESSAGE_STATE_SEEN)
+                    view_holder3.seenImage.setImageResource(R.drawable.greencheckmark);
+                else
+                    view_holder3.seenImage.setImageResource(R.drawable.deliveredcheckmark);
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -150,15 +160,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return messageArrayList.size();
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
-
     // Insert a new item to the RecyclerView on a predefined position
     public void insert(ChatActivity.MessageInfo data) {
-        messageArrayList.add(0, data);
-        notifyItemInserted(0);
+        messageArrayList.add(data);
+        notifyItemInserted(messageArrayList.size() - 1);
     }
 
     // Remove a RecyclerView item containing a specified Data object

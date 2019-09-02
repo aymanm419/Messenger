@@ -12,9 +12,9 @@
         android:layout_toEndOf="@+id/profilePicture"
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_10sdp"
-        android:background="@drawable/textview_border"
+        android:background="@drawable/sendingtext_border"
         android:gravity="end"
-        android:maxWidth="@dimen/_230sdp"
+        android:maxWidth="@dimen/_220sdp"
         android:padding="@dimen/_6sdp"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/_14ssp" />
