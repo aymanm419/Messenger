@@ -112,9 +112,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     view_holder2.message.setGravity(Gravity.LEFT);
                 }
                 if (messageArrayList.get(position).getMessageState() == MESSAGE_STATE_SEEN)
-                    view_holder2.seenImage.setImageResource(R.drawable.greencheckmark);
+                    GlideApp.with(mContext).load(R.drawable.greencheckmark).into(view_holder2.seenImage);
                 else
-                    view_holder2.seenImage.setImageResource(R.drawable.deliveredcheckmark);
+                    GlideApp.with(mContext).load(R.drawable.deliveredcheckmark).into(view_holder2.seenImage);
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -126,9 +126,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case 3:
                 final View_Holder.View_Holder3 view_holder3 = (View_Holder.View_Holder3) holder;
                 if (messageArrayList.get(position).getMessageState() == MESSAGE_STATE_SEEN)
-                    view_holder3.seenImage.setImageResource(R.drawable.greencheckmark);
+                    GlideApp.with(mContext).load(R.drawable.greencheckmark).into(view_holder3.seenImage);
                 else
-                    view_holder3.seenImage.setImageResource(R.drawable.deliveredcheckmark);
+                    GlideApp.with(mContext).load(R.drawable.deliveredcheckmark).into(view_holder3.seenImage);
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -159,7 +159,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public int getItemCount() {
         return messageArrayList.size();
     }
-
     // Insert a new item to the RecyclerView on a predefined position
     public void insert(ChatActivity.MessageInfo data) {
         messageArrayList.add(data);
