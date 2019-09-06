@@ -18,13 +18,19 @@
             android:label="@string/title_activity_users"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Chat.ChatActivity" />
-        <activity android:name=".Register.registerActivity" />
-        <activity android:name=".Login.loginActivity">
+        <activity
+            android:name=".Register.registerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Login.loginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 

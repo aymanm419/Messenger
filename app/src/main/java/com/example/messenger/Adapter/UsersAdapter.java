@@ -84,8 +84,10 @@ public class UsersAdapter extends BaseAdapter {
         lastQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()) == MESSAGE_PHOTO)
+                if (Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()) == MESSAGE_PHOTO) {
+                    ((TextView) v.findViewById(R.id.lastMessageTextView)).setText("Photo");
                     return;
+                }
                 String message = dataSnapshot.child("messageContent").getValue().toString();
                 if (message.length() > MAX_LAST_MESSAGE_SIZE)
                     message = message.substring(0, MAX_LAST_MESSAGE_SIZE) + "...";

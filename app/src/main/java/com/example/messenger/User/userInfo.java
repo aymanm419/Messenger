@@ -3,8 +3,8 @@ package com.example.messenger.User;
 import com.google.firebase.database.Exclude;
 
 public class userInfo {
-    public String nickname;
-    public String email;
+    public String nickname = "No Name";
+    public String email = "No Email";
     @Exclude
     private String userUID;
     public userInfo() {

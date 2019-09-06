@@ -95,10 +95,11 @@ public class ChatActivity extends AppCompatActivity {
             this.messageState = _messageState;
         }
 
-        private MessageInfo(String _messageContent, String _senderEmail, int _messageType, int _messageState) {
+        private MessageInfo(String _messageContent, String _senderEmail, int _messageType, boolean _messageNotified, int _messageState) {
             this.messageContent = _messageContent;
             this.senderEmail = _senderEmail;
             this.messageType = _messageType;
+            this.messageNotified = _messageNotified;
             this.messageState = _messageState;
         }
 
@@ -338,8 +339,8 @@ public class ChatActivity extends AppCompatActivity {
     public void uploadPhoto(final String name, Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         BitMapHandler bitMapHandler = new BitMapHandler();
-        bitmap = bitMapHandler.getResizedBitmapLessThanMaxSize(bitmap, 100);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
+        bitmap = bitMapHandler.getResizedBitmapLessThanMaxSize(bitmap, 50);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 65, baos);
         byte[] data = baos.toByteArray();
         UploadTask uploadTask = FirebaseStorage.getInstance().getReference().child("chat_images").child(name + ".jpg").putBytes(data);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -350,12 +351,12 @@ public class ChatActivity extends AppCompatActivity {
                 dbR.child(String.format("users/%s/friends/%s/messages/%s", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID(),
                         mGroupId))
                         .setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO,
-                                MESSAGE_STATE_SEEN
+                                true, MESSAGE_STATE_SEEN
                 ));
                 dbR.child(String.format("users/%s/friends/%s/messages/%s", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid(),
                         mGroupId))
                         .setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO,
-                                MESSAGE_STATE_DELIVERED
+                                false, MESSAGE_STATE_DELIVERED
                 ));
             }
         });

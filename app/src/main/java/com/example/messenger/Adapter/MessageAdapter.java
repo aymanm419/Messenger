@@ -112,7 +112,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     view_holder2.message.setGravity(Gravity.LEFT);
                 }
                 if (messageArrayList.get(position).getMessageState() == MESSAGE_STATE_SEEN)
-                    GlideApp.with(mContext).load(R.drawable.greencheckmark).into(view_holder2.seenImage);
+                    GlideApp.with(mContext).load(R.drawable.seencheckmark).into(view_holder2.seenImage);
                 else
                     GlideApp.with(mContext).load(R.drawable.deliveredcheckmark).into(view_holder2.seenImage);
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -126,7 +126,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case 3:
                 final View_Holder.View_Holder3 view_holder3 = (View_Holder.View_Holder3) holder;
                 if (messageArrayList.get(position).getMessageState() == MESSAGE_STATE_SEEN)
-                    GlideApp.with(mContext).load(R.drawable.greencheckmark).into(view_holder3.seenImage);
+                    GlideApp.with(mContext).load(R.drawable.seencheckmark).into(view_holder3.seenImage);
                 else
                     GlideApp.with(mContext).load(R.drawable.deliveredcheckmark).into(view_holder3.seenImage);
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {

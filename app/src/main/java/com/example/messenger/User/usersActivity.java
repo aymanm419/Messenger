@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.messenger.User.ui.main.SectionsPagerAdapter;
@@ -49,11 +50,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.example.messenger.Chat.ChatActivity.MESSAGE_PHOTO;
+
 public class usersActivity extends AppCompatActivity {
     private long lastTimeClicked = 0;
     private ArrayList<String> UIDS;
     private ArrayList<ChildEventListener> listeners;
     private ChildEventListener childEventListener, temporaryListener;
+    private TextView nameTextView;
+    private CircleImageView profileImageView;
     private DatabaseReference dbR;
     private FirebaseUser mUser;
     private NotificationManagerCompat notificationManager;
@@ -78,8 +85,17 @@ public class usersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_users);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        nameTextView = findViewById(R.id.nameTextView);
+        profileImageView = findViewById(R.id.profileImageView);
+        nameTextView.setText(mUser.getDisplayName());
+        FirebaseStorage.getInstance().getReference().child(String.format("profile_images/%s.jpg", mUser.getEmail())).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                GlideApp.with(getApplicationContext()).load(uri).into(profileImageView);
+            }
+        });
         tabs.setupWithViewPager(viewPager);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -112,8 +128,11 @@ public class usersActivity extends AppCompatActivity {
                                                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
                                                     mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
                                                     mBuilder.setContentTitle(nickname);
-                                                    mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString())
-                                                            .setAutoCancel(true)
+                                                    if (Integer.parseInt(dataSnapshot1.child("messageType").getValue().toString()) == MESSAGE_PHOTO)
+                                                        mBuilder.setContentText("Sent an image");
+                                                    else
+                                                        mBuilder.setContentText(dataSnapshot1.child("messageContent").getValue().toString());
+                                                    mBuilder.setAutoCancel(true)
                                                             .setGroup(userUID)
                                                             .setGroupSummary(true)
                                                             .setLargeIcon(resource)
@@ -171,7 +190,8 @@ public class usersActivity extends AppCompatActivity {
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
-                addUserNotification(dataSnapshot.child("nickname").getValue().toString(), dataSnapshot.getKey());
+                if (dataSnapshot.hasChild("nickname"))
+                    addUserNotification(dataSnapshot.child("nickname").getValue().toString(), dataSnapshot.getKey());
             }
 
             @Override
@@ -180,7 +200,8 @@ public class usersActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull final DataSnapshot dataSnapshot) {
-                removeUserListener(dataSnapshot.getKey());
+                if (dataSnapshot.hasChild("nickname"))
+                    removeUserListener(dataSnapshot.getKey());
             }
 
             @Override
@@ -202,6 +223,9 @@ public class usersActivity extends AppCompatActivity {
             lastTimeClicked = time;
             return;
         } else {
+            for (int i = 0; i < UIDS.size(); i++)
+                dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), UIDS.get(i))).
+                        removeEventListener(listeners.get(i));
             FirebaseAuth.getInstance().signOut();
             finish();
             super.onBackPressed();

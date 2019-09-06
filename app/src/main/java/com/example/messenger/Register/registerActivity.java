@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.messenger.R;
 import com.example.messenger.Tools.BitMapHandler;
+import com.example.messenger.Tools.GlideApp;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class registerActivity extends AppCompatActivity {
     private static class user {
@@ -68,14 +71,29 @@ public class registerActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static int passwordStrengthPart = 20;
     private static final int REQUEST_WRITE_STORAGE_REQUEST_CODE = 2;
+    private TextView nickNameText, emailText, passwordText, confirmPasswordText, passwordStrength;
+    private CircleImageView profilePicture;
+    private Button registerButton;
+    private ProgressBar passwordBar;
 
+    void Init() {
+        profilePicture = findViewById(R.id.profileImageView);
+        nickNameText = findViewById(R.id.userNickNameText);
+        emailText = findViewById(R.id.userEmailAddressText);
+        passwordText = findViewById(R.id.userPasswordText);
+        confirmPasswordText = findViewById(R.id.userConfirmPasswordText);
+        passwordBar = findViewById(R.id.passwordStrengthBar);
+        passwordStrength = findViewById(R.id.passwordStrengthParcent);
+        registerButton = findViewById(R.id.registerButton);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
         requestAppPermissions();
-        ((EditText) findViewById(R.id.passwordRegisterText)).addTextChangedListener(new TextWatcher() {
+        Init();
+        passwordText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -83,8 +101,11 @@ public class registerActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ((ProgressBar) findViewById(R.id.passwordStrengthBar)).setProgress(getPasswordStrength(s.toString()) * passwordStrengthPart);
-                ((TextView) findViewById(R.id.passwordStrengthPercent)).setText(getPasswordStrength(s.toString()) * passwordStrengthPart + "%");
+                if (Build.VERSION.SDK_INT >= 24)
+                    passwordBar.setProgress(getPasswordStrength(s.toString()) * passwordStrengthPart, true);
+                else
+                    passwordBar.setProgress(getPasswordStrength(s.toString()) * passwordStrengthPart);
+                passwordStrength.setText(String.valueOf(passwordBar.getProgress()) + "%");
             }
 
             @Override
@@ -114,8 +135,7 @@ public class registerActivity extends AppCompatActivity {
                 try {
                     InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    ((ImageView) findViewById(R.id.uploadImageView)).setImageBitmap(bitmap);
-                    findViewById(R.id.uploadImageView).setTag("1");
+                    GlideApp.with(getApplicationContext()).load(bitmap).into(profilePicture);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -148,10 +168,10 @@ public class registerActivity extends AppCompatActivity {
     }
 
     public void Register(View view) {
-        String nickName = ((EditText) findViewById(R.id.nickNameEditText)).getText().toString();
-        String email = ((EditText) findViewById(R.id.emailRegisterText)).getText().toString().replace(" ", "");
-        String password = ((EditText) findViewById(R.id.passwordRegisterText)).getText().toString();
-        String confirmPassword = ((EditText) findViewById(R.id.passwordConfirmText)).getText().toString();
+        String nickName = nickNameText.getText().toString();
+        String email = emailText.getText().toString().replace(" ", "");
+        String password = passwordText.getText().toString();
+        String confirmPassword = confirmPasswordText.getText().toString();
         if (nickName.length() <= 2) {
             Toast.makeText(this, "Nickname is very short!", Toast.LENGTH_SHORT).show();
             return;
@@ -172,11 +192,8 @@ public class registerActivity extends AppCompatActivity {
             Toast.makeText(this, "Password must contain lower-case, upper-case, numbers or special numbers and Be within length of (3-30) and have strength of 40% atleast", Toast.LENGTH_LONG).show();
             return;
         }
-        if (findViewById(R.id.uploadImageView).getTag().equals("0")) {
-            Toast.makeText(this, "Please Choose a picture", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        ((Button) findViewById(R.id.registerButton)).setEnabled(false);
+        registerButton.setEnabled(false);
+        Toast.makeText(this, "Registering!", Toast.LENGTH_SHORT).show();
         makeAccount(email, password, nickName);
     }
 
@@ -199,15 +216,14 @@ public class registerActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(registerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                ((Button) findViewById(R.id.registerButton)).setEnabled(true);
+                registerButton.setEnabled(true);
             }
         });
     }
 
     public void registerUser(final String email, final String nickName, final FirebaseUser user) {
         Toast.makeText(this, "Uploading!", Toast.LENGTH_SHORT).show();
-        ImageView imageView = findViewById(R.id.uploadImageView);
-        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
         BitMapHandler bitMapHandler = new BitMapHandler();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap = bitMapHandler.getResizedBitmapLessThanMaxSize(bitmap, 100);
@@ -241,14 +257,8 @@ public class registerActivity extends AppCompatActivity {
                                 Toast.makeText(registerActivity.this, "Verification Email Sent!", Toast.LENGTH_LONG).show();
                             }
                         });*/
-                ((Button) findViewById(R.id.registerButton)).setEnabled(true);
+                registerButton.setEnabled(true);
                 finish();
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                ((ProgressBar) findViewById(R.id.progressBar)).setProgress((int) progress);
             }
         });
         return;
