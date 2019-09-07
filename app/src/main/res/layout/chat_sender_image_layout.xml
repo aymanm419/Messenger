@@ -10,9 +10,9 @@
         android:layout_width="@dimen/_200sdp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_7sdp"
-        android:layout_marginEnd="@dimen/_65sdp"
+        android:layout_toLeftOf="@+id/profilePicture"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:srcCompat="@android:color/transparent" />
