@@ -70,9 +70,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ViewGroup.LayoutParams paramsReset = null;
         switch (holder.getItemViewType()) {
             case 0:
                 final View_Holder.View_Holder0 view_holder0 = (View_Holder.View_Holder0) holder;
+                paramsReset = view_holder0.message.getLayoutParams();
+                paramsReset.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                view_holder0.message.setLayoutParams(paramsReset);
                 view_holder0.message.setText(messageArrayList.get(position).getMessageContent());
                 FirebaseStorage.getInstance().getReference().child("profile_images/" + messageArrayList.get(position).getSenderEmail() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -101,6 +105,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 break;
             case 2:
                 final View_Holder.View_Holder2 view_holder2 = (View_Holder.View_Holder2) holder;
+                paramsReset = view_holder2.message.getLayoutParams();
+                paramsReset.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                view_holder2.message.setLayoutParams(paramsReset);
                 view_holder2.message.setText(messageArrayList.get(position).getMessageContent());
                 Paint paint = new Paint(view_holder2.message.getPaint());
                 ViewGroup.LayoutParams params = view_holder2.message.getLayoutParams();

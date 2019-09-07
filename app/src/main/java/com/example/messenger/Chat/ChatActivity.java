@@ -14,17 +14,21 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.messenger.Adapter.MessageAdapter;
 import com.example.messenger.Tools.BitMapHandler;
+import com.example.messenger.Tools.GlideApp;
 import com.example.messenger.User.userInfo;
 import com.example.messenger.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +47,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static com.example.messenger.Register.registerActivity.PICK_IMAGE;
 
 public class ChatActivity extends AppCompatActivity {
@@ -50,12 +56,14 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView chatListView;
     private TextView chatTextBox;
     private DatabaseReference dbR;
-    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     private ArrayList<MessageInfo> messages;
     private userInfo recivingUser;
     private MessageAdapter messageAdapter;
     private ChildEventListener childEventListener, seenEventListener, makeSeenEventListener;
     private HashMap<String, Integer> UIDToIndex;
+    private TextView nameTextView;
+    private CircleImageView profileImageView;
     private int messageCounter = 0;
     public static final int MESSAGE_TEXT = 0;
     public static final int MESSAGE_PHOTO = 1;
@@ -152,13 +160,16 @@ public class ChatActivity extends AppCompatActivity {
         recivingUser = new userInfo(info[1], info[0], info[2]);
         chatListView = findViewById(R.id.chatListView);
         chatTextBox = findViewById(R.id.chatTextBox);
-        mAuth = FirebaseAuth.getInstance();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         messages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, messages);
         UIDToIndex = new HashMap<>();
+        nameTextView = findViewById(R.id.nameTextView);
+        profileImageView = findViewById(R.id.profileImageView);
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String message = dataSnapshot.child("messageContent").getValue().toString();
                 MessageInfo messageInfo = new MessageInfo(dataSnapshot.child("messageContent").getValue().toString(), dataSnapshot.child("senderEmail").getValue().toString()
                         , Integer.parseInt(dataSnapshot.child("messageType").getValue().toString()), dataSnapshot.getKey(),
                         Integer.parseInt(dataSnapshot.child("messageState").getValue().toString()));
@@ -223,7 +234,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (Integer.parseInt(dataSnapshot.child("messageState").getValue().toString()) == MESSAGE_STATE_DELIVERED &&
                         dataSnapshot.child("senderEmail").getValue().toString().equals(recivingUser.getEmail())) {
-                    dbR.child(String.format("users/%s/friends/%s/messages/%s/messageState", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID(),
+                    dbR.child(String.format("users/%s/friends/%s/messages/%s/messageState", mUser.getUid(), recivingUser.getUserUID(),
                             dataSnapshot.getKey())).setValue(MESSAGE_STATE_SEEN);
                 }
             }
@@ -248,6 +259,13 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         };
+        nameTextView.setText(recivingUser.getNickname());
+        FirebaseStorage.getInstance().getReference().child(String.format("profile_images/%s.jpg", recivingUser.getEmail())).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                GlideApp.with(getApplicationContext()).load(uri).into(profileImageView);
+            }
+        });
     }
 
     @Override
@@ -267,11 +285,11 @@ public class ChatActivity extends AppCompatActivity {
         itemAnimator.setAddDuration(300);
         itemAnimator.setRemoveDuration(300);
         chatListView.setItemAnimator(itemAnimator);
-        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mUser.getUid()))
                 .addChildEventListener(childEventListener);
-        dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+        dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), recivingUser.getUserUID()))
                 .addChildEventListener(makeSeenEventListener);
-        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mUser.getUid()))
                 .addChildEventListener(seenEventListener);
         Bundle bundle = new Bundle();
         bundle.putString("UID", recivingUser.getUserUID());
@@ -285,14 +303,14 @@ public class ChatActivity extends AppCompatActivity {
         if (chatTextBox.getText().length() == 0)
             return;
         try {
-            String mGroupId = dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+            String mGroupId = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), recivingUser.getUserUID()))
                     .push().getKey();
-            dbR.child(String.format("users/%s/friends/%s/messages/%s", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID(),
-                    mGroupId)).setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), true,
+            dbR.child(String.format("users/%s/friends/%s/messages/%s", mUser.getUid(), recivingUser.getUserUID(),
+                    mGroupId)).setValue(new MessageInfo(chatTextBox.getText().toString(), mUser.getEmail(), true,
                     MESSAGE_STATE_SEEN
             ));
-            dbR.child(String.format("users/%s/friends/%s/messages/%s", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid(),
-                    mGroupId)).setValue(new MessageInfo(chatTextBox.getText().toString(), mAuth.getCurrentUser().getEmail(), false,
+            dbR.child(String.format("users/%s/friends/%s/messages/%s", recivingUser.getUserUID(), mUser.getUid(),
+                    mGroupId)).setValue(new MessageInfo(chatTextBox.getText().toString(), mUser.getEmail(), false,
                     MESSAGE_STATE_DELIVERED
             ));
             chatTextBox.setText("");
@@ -346,16 +364,16 @@ public class ChatActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                String mGroupId = dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+                String mGroupId = dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), recivingUser.getUserUID()))
                         .push().getKey();
-                dbR.child(String.format("users/%s/friends/%s/messages/%s", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID(),
+                dbR.child(String.format("users/%s/friends/%s/messages/%s", mUser.getUid(), recivingUser.getUserUID(),
                         mGroupId))
-                        .setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO,
+                        .setValue(new MessageInfo(name + ".jpg", mUser.getEmail(), MESSAGE_PHOTO,
                                 true, MESSAGE_STATE_SEEN
                 ));
-                dbR.child(String.format("users/%s/friends/%s/messages/%s", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid(),
+                dbR.child(String.format("users/%s/friends/%s/messages/%s", recivingUser.getUserUID(), mUser.getUid(),
                         mGroupId))
-                        .setValue(new MessageInfo(name + ".jpg", mAuth.getCurrentUser().getEmail(), MESSAGE_PHOTO,
+                        .setValue(new MessageInfo(name + ".jpg", mUser.getEmail(), MESSAGE_PHOTO,
                                 false, MESSAGE_STATE_DELIVERED
                 ));
             }
@@ -382,11 +400,11 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         messageAdapter.setDestroyed(true);
-        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mUser.getUid()))
                 .removeEventListener(childEventListener);
-        dbR.child(String.format("users/%s/friends/%s/messages", mAuth.getCurrentUser().getUid(), recivingUser.getUserUID()))
+        dbR.child(String.format("users/%s/friends/%s/messages", mUser.getUid(), recivingUser.getUserUID()))
                 .removeEventListener(makeSeenEventListener);
-        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mAuth.getCurrentUser().getUid()))
+        dbR.child(String.format("users/%s/friends/%s/messages", recivingUser.getUserUID(), mUser.getUid()))
                 .removeEventListener(seenEventListener);
         super.onBackPressed();
     }

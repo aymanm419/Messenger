@@ -17,7 +17,9 @@
             android:name=".User.usersActivity"
             android:label="@string/title_activity_users"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Chat.ChatActivity" />
+        <activity
+            android:name=".Chat.ChatActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Register.registerActivity"
             android:theme="@style/AppTheme.NoActionBar" />

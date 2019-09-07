@@ -8,17 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messenger.R;
+import com.example.messenger.Views.CustomTextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class View_Holder {
     static public class View_Holder0 extends RecyclerView.ViewHolder {
-        TextView message;
+        CustomTextView message;
         CircleImageView imageView;
 
         public View_Holder0(@NonNull View itemView) {
             super(itemView);
-            message = (TextView) itemView.findViewById(R.id.textMessage);
+            message = (CustomTextView) itemView.findViewById(R.id.textMessage);
             imageView = (CircleImageView) itemView.findViewById(R.id.profilePicture);
         }
     }
@@ -34,11 +35,11 @@ public class View_Holder {
     }
 
     static public class View_Holder2 extends RecyclerView.ViewHolder {
-        TextView message;
+        CustomTextView message;
         CircleImageView imageView, seenImage;
         public View_Holder2(@NonNull View itemView) {
             super(itemView);
-            message = (TextView) itemView.findViewById(R.id.textMessage);
+            message = (CustomTextView) itemView.findViewById(R.id.textMessage);
             imageView = (CircleImageView) itemView.findViewById(R.id.profilePicture);
             seenImage = (CircleImageView) itemView.findViewById(R.id.seenImage);
         }

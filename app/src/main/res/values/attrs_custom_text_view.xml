@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="CustomTextView">
+        <attr name="maxCustomWidth" format="dimension" />
+    </declare-styleable>
+</resources>
