@@ -1,4 +1,4 @@
-package com.example.messenger.User.ui.main;
+package com.example.messenger.User.ui.userFragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -57,8 +57,8 @@ public class Profile_Fragment extends Fragment {
             }
             return view;
         }
-        circleImageView = (CircleImageView) view.findViewById(R.id.userImageProfile);
-        textView = (TextView) view.findViewById(R.id.userEmailAddressText);
+        circleImageView = view.findViewById(R.id.userImageProfile);
+        textView = view.findViewById(R.id.userEmailAddressText);
         nickname = view.findViewById(R.id.userNickNameText);
         textView.setText(mUser.getEmail());
         nickname.setText(mUser.getDisplayName());

@@ -1,20 +1,17 @@
-package com.example.messenger.User.ui.main;
+package com.example.messenger.User.ui.userFragment;
 
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,10 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.messenger.Adapter.PendingRequestsAdapter;
 import com.example.messenger.R;
 import com.example.messenger.User.userInfo;
-import com.example.messenger.User.usersActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Pending_Requests_Fragment extends Fragment {
     private ArrayList<userInfo> pending = null;
@@ -104,7 +98,7 @@ public class Pending_Requests_Fragment extends Fragment {
                     mBuilder.setContentTitle("New Friend Request!");
                     mBuilder.setContentText(dataSnapshot.child("nickname").getValue().toString() + " Sent you a friend request.");
                     mBuilder.build();
-                    NotificationManager notification = (NotificationManager) getActivity().getSystemService(activity.NOTIFICATION_SERVICE);
+                    NotificationManager notification = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     notification.notify(createID(), mBuilder.build());
                 }
             }
@@ -119,7 +113,6 @@ public class Pending_Requests_Fragment extends Fragment {
                 userInfo user = new userInfo(dataSnapshot.child("nickname").getValue().toString(), dataSnapshot.child("email").getValue().toString(),
                         dataSnapshot.getKey());
                 pendingRequestsAdapter.remove(user);
-                Activity activity = (usersActivity) getActivity();
                 if (activity != null) {
                     TabLayout tabLayout = activity.findViewById(R.id.tabs);
                     tabLayout.getTabAt(2).setText("Pending Requests(" + pending.size() + ")");

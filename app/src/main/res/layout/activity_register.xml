@@ -1,165 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:context=".Register.registerActivity">
+        android:background="@drawable/register_button"
+        android:onClick="Register"
+        android:soundEffectsEnabled="false"
+        android:text="Register!"
+        android:textColor="#DDDCDC"
+        app:layout_constraintStart_toEndOf="@id/registerVLine"
+        app:layout_constraintTop_toBottomOf="@id/registerHLine" />
 
-        <ImageView
-            android:id="@+id/registerBackGround"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:contentDescription="Register Background"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/registerbackground" />
+    <EditText
+        android:id="@+id/userNickNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/register_text_view"
+        android:hint="Nick Name"
+        android:importantForAutofill="no"
+        android:inputType="textNoSuggestions|textPersonName"
+        android:padding="@dimen/_6sdp"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:textColorHint="#575555"
+        android:textCursorDrawable="@drawable/cursor_color"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/textVLine"
+        app:layout_constraintTop_toBottomOf="@+id/textHLine"
+        app:layout_constraintWidth_percent="0.62" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileImageView"
-            android:layout_width="@dimen/_160sdp"
-            android:layout_height="@dimen/_160sdp"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:onClick="pickImage"
-            android:src="@drawable/unknown_profile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <EditText
+        android:id="@+id/userEmailAddressText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/register_text_view"
+        android:hint="Email"
+        android:importantForAutofill="no"
+        android:inputType="textNoSuggestions|textEmailAddress"
+        android:padding="@dimen/_6sdp"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:textColorHint="#575555"
+        android:textCursorDrawable="@drawable/cursor_color"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/textVLine"
+        app:layout_constraintTop_toBottomOf="@+id/textEmailHLine"
+        app:layout_constraintWidth_percent="0.62" />
 
-        <EditText
-            android:id="@+id/userNickNameText"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_50sdp"
-            android:background="@drawable/register_text_view"
-            android:hint="Nick Name"
-            android:padding="@dimen/_6sdp"
-            android:inputType="textNoSuggestions|textPersonName"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="#575555"
-            android:textSize="@dimen/_13ssp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileImageView"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textCursorDrawable="@drawable/cursor_color"
-            android:importantForAutofill="no" />
+    <EditText
+        android:id="@+id/userPasswordText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/register_text_view"
+        android:hint="Password"
+        android:importantForAutofill="no"
+        android:inputType="textNoSuggestions|textPassword"
+        android:padding="@dimen/_6sdp"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:textColorHint="#575555"
+        android:textCursorDrawable="@drawable/cursor_color"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/textVLine"
+        app:layout_constraintTop_toBottomOf="@+id/textPasswordHLine"
+        app:layout_constraintWidth_percent="0.62" />
 
-        <EditText
-            android:id="@+id/userEmailAddressText"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:background="@drawable/register_text_view"
-            android:hint="Email"
-            android:padding="@dimen/_6sdp"
-            android:inputType="textNoSuggestions|textEmailAddress"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="#575555"
-            android:textSize="@dimen/_13ssp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userNickNameText"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textCursorDrawable="@drawable/cursor_color"
-            android:importantForAutofill="no" />
+    <EditText
+        android:id="@+id/userConfirmPasswordText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/register_text_view"
+        android:hint="Confirm Password"
+        android:importantForAutofill="no"
+        android:inputType="textNoSuggestions|textPassword"
+        android:padding="@dimen/_6sdp"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:textColorHint="#575555"
+        android:textCursorDrawable="@drawable/cursor_color"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/textVLine"
+        app:layout_constraintTop_toBottomOf="@+id/textConfirmPasswordHLine"
+        app:layout_constraintWidth_percent="0.62" />
 
-        <EditText
-            android:id="@+id/userPasswordText"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:background="@drawable/register_text_view"
-            android:hint="Password"
-            android:padding="@dimen/_6sdp"
-            android:inputType="textNoSuggestions|textPassword"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="#575555"
-            android:textSize="@dimen/_13ssp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userEmailAddressText"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textCursorDrawable="@drawable/cursor_color"
-            android:importantForAutofill="no" />
+    <ImageView
+        android:id="@+id/registerBackGround"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="Register Background"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/registerbackground" />
 
-        <EditText
-            android:id="@+id/userConfirmPasswordText"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:background="@drawable/register_text_view"
-            android:hint="Confirm Password"
-            android:padding="@dimen/_6sdp"
-            android:inputType="textNoSuggestions|textPassword"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="#575555"
-            android:textSize="@dimen/_13ssp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userPasswordText"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textCursorDrawable="@drawable/cursor_color"
-            android:importantForAutofill="no" />
 
-        <TextView
-            android:id="@+id/passwordStrengthText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Password Strength"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginStart="@dimen/_15sdp"
-            android:textColor="#FFFFFFFF"
-            android:textSize="@dimen/_13ssp"
-            app:layout_constraintTop_toBottomOf="@+id/userConfirmPasswordText"
-            app:layout_constraintStart_toStartOf="parent" />
+    <ProgressBar
+        android:id="@+id/passwordStrengthBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        app:layout_constraintStart_toEndOf="@id/percentBarVLine"
+        app:layout_constraintTop_toBottomOf="@id/passwordPercentHLine"
+        app:layout_constraintWidth_percent="0.55" />
 
-        <ProgressBar
-            android:id="@+id/passwordStrengthBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="@dimen/_170sdp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:max="100"
-            android:progress="0"
-            app:layout_constraintStart_toEndOf="@id/passwordStrengthText"
-            app:layout_constraintTop_toBottomOf="@id/userConfirmPasswordText" />
+    <TextView
+        android:id="@+id/passwordStrengthText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Password Strength"
+        android:textColor="#FFFFFFFF"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toEndOf="@id/passwordStrengthTextVLine"
+        app:layout_constraintTop_toBottomOf="@id/passwordStrengthTextHLine" />
 
-        <TextView
-            android:id="@+id/passwordStrengthParcent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_85sdp"
-            android:layout_marginTop="@dimen/_18sdp"
-            android:textSize="@dimen/_11ssp"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toEndOf="@id/passwordStrengthText"
-            app:layout_constraintTop_toBottomOf="@id/userConfirmPasswordText" />
+    <TextView
+        android:id="@+id/passwordStrengthParcent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintStart_toEndOf="@id/passwordPercentVLine"
+        app:layout_constraintTop_toBottomOf="@id/passwordPercentHLine" />
 
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:background="@drawable/register_button"
-            android:onClick="Register"
-            android:soundEffectsEnabled="false"
-            android:text="Register!"
-            android:textColor="#DDDCDC"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/passwordStrengthBar" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/profileVLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.30" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/profileHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textVLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.20" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.38" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textEmailHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.46" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textPasswordHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.54" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textConfirmPasswordHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.62" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/passwordStrengthTextHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.70" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/passwordPercentHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.706" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/passwordStrengthTextVLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/passwordPercentVLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.69" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/percentBarVLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.42" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/registerVLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.39" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/registerHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.76" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:onClick="pickImage"
+        android:src="@drawable/unknown_profile"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="@id/profileVLine"
+        app:layout_constraintTop_toTopOf="@id/profileHLine"
+        app:layout_constraintWidth_percent="0.40" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

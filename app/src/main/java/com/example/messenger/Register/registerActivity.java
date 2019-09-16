@@ -1,11 +1,5 @@
 package com.example.messenger.Register;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,11 +12,15 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.messenger.R;
 import com.example.messenger.Tools.BitMapHandler;
@@ -37,7 +35,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
@@ -105,7 +102,7 @@ public class registerActivity extends AppCompatActivity {
                     passwordBar.setProgress(getPasswordStrength(s.toString()) * passwordStrengthPart, true);
                 else
                     passwordBar.setProgress(getPasswordStrength(s.toString()) * passwordStrengthPart);
-                passwordStrength.setText(String.valueOf(passwordBar.getProgress()) + "%");
+                passwordStrength.setText(passwordBar.getProgress() + "%");
             }
 
             @Override
@@ -169,7 +166,7 @@ public class registerActivity extends AppCompatActivity {
 
     public void Register(View view) {
         String nickName = nickNameText.getText().toString();
-        String email = emailText.getText().toString().replace(" ", "");
+        String email = emailText.getText().toString().replace(" ", "").toLowerCase();
         String password = passwordText.getText().toString();
         String confirmPassword = confirmPasswordText.getText().toString();
         if (nickName.length() <= 2) {
@@ -234,7 +231,7 @@ public class registerActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 Toast.makeText(registerActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                ((Button) findViewById(R.id.registerButton)).setEnabled(true);
+                findViewById(R.id.registerButton).setEnabled(true);
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override

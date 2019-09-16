@@ -6,26 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".Login.loginActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="loginBackground"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/registerbackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+    <Button
+        android:id="@+id/loginButton"
+        style="@style/AppTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/register_button"
+        android:onClick="Login"
+        android:text="Login"
+        android:textColor="#DBCBCB"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintStart_toStartOf="@+id/buttonGuideLine"
+        app:layout_constraintTop_toBottomOf="@+id/buttonHGuideLine"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <Button
+        android:id="@+id/registerButton"
+        style="@style/AppTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/register_button"
+        android:onClick="Register"
+        android:text="Register"
+        android:textColor="#DBCBCB"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintStart_toEndOf="@+id/registerGuideLine"
+        app:layout_constraintTop_toBottomOf="@+id/buttonHGuideLine"
+        app:layout_constraintWidth_percent="0.2" />
 
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="@dimen/_200sdp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_60sdp"
-        android:layout_marginTop="@dimen/_150sdp"
         android:background="@drawable/register_text_view"
         android:hint="Email"
         android:inputType="textNoSuggestions|textEmailAddress"
@@ -35,15 +49,14 @@
         android:textColorHint="#575555"
         android:textCursorDrawable="@drawable/cursor_color"
         android:textSize="@dimen/_13ssp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@id/textGuideLine"
+        app:layout_constraintTop_toTopOf="@id/horizontalGuideLine"
+        app:layout_constraintWidth_percent="0.63" />
 
     <EditText
         android:id="@+id/passwordEditText"
-        android:layout_width="@dimen/_200sdp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_60sdp"
-        android:layout_marginTop="@dimen/_12sdp"
         android:background="@drawable/register_text_view"
         android:hint="Password"
         android:inputType="textNoSuggestions|textPassword"
@@ -51,39 +64,66 @@
         android:singleLine="true"
         android:textColor="#000000"
         android:textColorHint="#575555"
-        android:textSize="@dimen/_13ssp"
         android:textCursorDrawable="@drawable/cursor_color"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/textGuideLine"
+        app:layout_constraintTop_toBottomOf="@+id/textHHLine"
+        app:layout_constraintWidth_percent="0.63" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="loginBackground"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/registerbackground" />
 
-    <Button
-        android:id="@+id/loginButton"
-        style="@style/AppTheme"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:layout_marginStart="@dimen/_90sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:background="@drawable/register_button"
-        android:onClick="Login"
-        android:text="Login"
-        android:textColor="#DBCBCB"
-        android:textSize="@dimen/_12ssp"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
 
-    <Button
-        android:id="@+id/registerButton"
-        style="@style/AppTheme"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:layout_marginStart="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:background="@drawable/register_button"
-        android:onClick="Register"
-        android:text="Register"
-        android:textColor="#DBCBCB"
-        android:textSize="@dimen/_12ssp"
-        app:layout_constraintStart_toEndOf="@+id/loginButton"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/buttonGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.28" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/registerGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/textHHLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.37" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/buttonHGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

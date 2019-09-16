@@ -1,6 +1,5 @@
-package com.example.messenger.User.ui.main;
+package com.example.messenger.User.ui.userFragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.messenger.Adapter.UsersAdapter;
